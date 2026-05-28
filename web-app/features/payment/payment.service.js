@@ -1,0 +1,77 @@
+const { v4: uuidv4 } = require('uuid');
+const db             = require('../../config/db');
+const model          = require('./payment.model');
+
+const VALID_PAYMENT_METHODS = ['credit_card', 'online_banking', 'e_wallet'];
+
+const getMyPayments = async (userId) => {
+  return model.findByUserId(userId);
+};
+
+const getPaymentById = async (id, userId) => {
+  const payment = await model.findById(id, userId);
+
+  if (!payment) {
+    const err = new Error('Payment not found');
+    err.status = 404;
+    throw err;
+  }
+
+  return payment;
+};
+
+const createPayment = async (userId, { courseId, paymentMethod, cardLastFour }) => {
+  // Validate payment method
+  if (!VALID_PAYMENT_METHODS.includes(paymentMethod)) {
+    const err = new Error(`paymentMethod must be one of: ${VALID_PAYMENT_METHODS.join(', ')}`);
+    err.status = 400;
+    throw err;
+  }
+
+  // Validate card digits only required for credit_card
+  if (paymentMethod === 'credit_card' && (!cardLastFour || !/^\d{4}$/.test(cardLastFour))) {
+    const err = new Error('cardLastFour must be exactly 4 digits for credit card payments');
+    err.status = 400;
+    throw err;
+  }
+
+  const [courseRows] = await db.query(
+    'SELECT id, price FROM courses WHERE id = ? AND is_published = 1',
+    [courseId]
+  );
+
+  if (courseRows.length === 0) {
+    const err = new Error('Course not found or unavailable');
+    err.status = 404;
+    throw err;
+  }
+
+  const { price } = courseRows[0];
+
+  const [existingPayment] = await db.query(
+    'SELECT id FROM payments WHERE user_id = ? AND course_id = ? AND status = "completed"',
+    [userId, courseId]
+  );
+
+  if (existingPayment.length > 0) {
+    const err = new Error('Course already purchased');
+    err.status = 409;
+    throw err;
+  }
+
+  // Create the payment record
+  const paymentId = await model.create(userId, courseId, price, paymentMethod, cardLastFour);
+
+  // Mock payment processing (instantly marks as completed)
+  const transactionRef = `TXN-${Date.now()}-${uuidv4().slice(0, 6).toUpperCase()}`;
+  await model.updateStatus(paymentId, 'completed', transactionRef);
+
+  // Auto-enrol the user after successful payment
+  await model.createEnrolment(userId, courseId);
+
+  return model.findById(paymentId, userId);
+};
+
+module.exports = { getMyPayments, getPaymentById, createPayment };
+
+
