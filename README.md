@@ -20,11 +20,10 @@ Deployment: Docker Compose
 
 Make sure you have the following installed before running the project:
 
-| Tool               | Minimum Version | Check                    |
-| Docker             | 24.x            | `docker --version`       |
-| Docker Compose     | 2.x             | `docker compose version` |
-| Git                | 2.x             | `git --version`          |
-| Node.js (optional) | 20.x            | `node --version`         |
+Docker (24.x) `docker --version`
+Docker Compose (2.x) `docker compose version`
+Git (2.x)`git --version`
+Node.js (optional) (20.x) `node --version`
 
 
 ## Getting Started
