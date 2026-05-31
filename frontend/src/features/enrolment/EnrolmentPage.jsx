@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { BookCopy } from 'lucide-react';
 import enrolmentService from '../../services/enrolment.service';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
@@ -41,7 +42,7 @@ const EnrolmentCard = ({ enrolment, onCancel }) => {
         <div className="w-full sm:w-32 h-24 bg-gray-100 rounded-lg overflow-hidden">
           {thumbnail_url
             ? <img src={thumbnail_url} alt={title} className="w-full h-full object-cover" />
-            : <div className="w-full h-full flex items-center justify-center text-3xl">📚</div>
+            : <div className="w-full h-full flex items-center justify-center text-3xl"><BookCopy /></div>
           }
         </div>
       </Link>
@@ -157,7 +158,7 @@ const EnrolmentPage = () => {
 
       {active.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
-          <p className="text-4xl mb-3">📖</p>
+          <p className="text-4xl mb-3"><BookCopy /></p>
           <p className="mb-4">You haven't enrolled in any courses yet.</p>
           <Link to="/courses" className="btn-primary text-sm">Browse courses</Link>
         </div>

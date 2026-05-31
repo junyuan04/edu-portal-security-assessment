@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { BookCopy } from 'lucide-react';
 
 const LEVEL_STYLES = {
   beginner:     'bg-green-100  text-green-700',
@@ -22,7 +23,7 @@ const CourseCard = ({ course }) => {
           <img src={thumbnail_url} alt={title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-300 text-4xl">
-            📚
+            <BookCopy />
           </div>
         )}
       </div>

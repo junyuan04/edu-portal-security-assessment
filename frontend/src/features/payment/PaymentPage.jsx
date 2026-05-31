@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { BookCopy, Lock } from 'lucide-react';
 import courseService  from '../../services/course.service';
 import paymentService from '../../services/payment.service';
 import Button     from '../../components/Button';
@@ -16,7 +17,7 @@ const CourseSummary = ({ course }) => (
     <div className="w-20 h-16 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
       {course.thumbnail_url
         ? <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
-        : <div className="w-full h-full flex items-center justify-center text-2xl">📚</div>
+        : <div className="w-full h-full flex items-center justify-center text-2xl"><BookCopy /></div>
       }
     </div>
     <div className="flex-1">
@@ -212,7 +213,8 @@ const PaymentPage = () => {
         </Button>
 
         <p className="text-xs text-center text-gray-400">
-          🔒 This is a mock payment — no real transaction is processed.
+         <Lock className="inline-block mr-2" />
+          This is a mock payment — no real transaction is processed.
         </p>
       </form>
     </div>

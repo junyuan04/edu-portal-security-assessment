@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Users, BookCopy, ClipboardList, DollarSign, CirclePlus } from 'lucide-react';
 import adminService from '../../services/admin.service';
 import Button from '../../components/Button';
 import Modal  from '../../components/Modal';
@@ -33,10 +34,10 @@ const StatsSection = () => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <StatCard label="Total users"       value={stats?.totalUsers}       icon="👥" color="bg-blue-50" />
-      <StatCard label="Total courses"     value={stats?.totalCourses}     icon="📚" color="bg-purple-50" />
-      <StatCard label="Active enrolments" value={stats?.activeEnrolments} icon="📋" color="bg-green-50" />
-      <StatCard label="Revenue (MYR)"     value={`RM ${(stats?.totalRevenue ?? 0).toFixed(2)}`} icon="💰" color="bg-yellow-50" />
+      <StatCard label="Total users"       value={stats?.totalUsers}       icon={<Users />} color="bg-blue-50" />
+      <StatCard label="Total courses"     value={stats?.totalCourses}     icon={<BookCopy />} color="bg-purple-50" />
+      <StatCard label="Active enrolments" value={stats?.activeEnrolments} icon={<ClipboardList />} color="bg-green-50" />
+      <StatCard label="Revenue (MYR)"     value={`RM ${(stats?.totalRevenue ?? 0).toFixed(2)}`} icon={<DollarSign />} color="bg-yellow-50" />
     </div>
   );
 };

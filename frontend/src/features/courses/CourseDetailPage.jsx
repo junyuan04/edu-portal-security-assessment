@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { BookCopy, FolderClosed, Lock, MonitorPlay, FileText, BookCheck, Link as LinkIcon} from 'lucide-react';
 import courseService    from '../../services/course.service';
 import enrolmentService from '../../services/enrolment.service';
 import Button from '../../components/Button';
+
 
 const LevelBadge = ({ level }) => {
   const styles = {
@@ -20,14 +22,14 @@ const LevelBadge = ({ level }) => {
 
 const MaterialsList = ({ materials }) => {
   if (!materials.length) return <p className="text-sm text-gray-400">No materials yet.</p>;
-  const icons = { video: '▶', document: '📄', quiz: '📝', link: '🔗' };
+  const icons = { video: <MonitorPlay />, document: <FileText />, quiz: <BookCheck />, link: <LinkIcon /> };
 
   return (
     <ul className="divide-y divide-gray-100">
       {materials.map((m) => (
         <li key={m.id} className="flex items-center justify-between py-3">
           <div className="flex items-center gap-3">
-            <span className="text-lg">{icons[m.material_type] || '📁'}</span>
+            <span className="text-lg">{icons[m.material_type] || <FolderClosed />}</span>
             <span className="text-sm text-gray-700">{m.title}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -35,7 +37,7 @@ const MaterialsList = ({ materials }) => {
               <span className="text-xs text-accent-600 font-medium">Free</span>
             )}
             {!m.is_free && !m.content_url && (
-              <span className="text-xs text-gray-400">🔒 Enrolled only</span>
+              <span className="text-xs text-gray-400"> <Lock /> Enrolled only</span>
             )}
           </div>
         </li>
@@ -189,7 +191,7 @@ const CourseDetailPage = () => {
             <div className="w-full h-40 bg-gray-100 rounded-lg overflow-hidden">
               {course.thumbnail_url
                 ? <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
-                : <div className="w-full h-full flex items-center justify-center text-5xl">📚</div>
+                : <div className="w-full h-full flex items-center justify-center text-5xl"><BookCopy /></div>
               }
             </div>
 
