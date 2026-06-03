@@ -22,15 +22,7 @@ const findAllPublished = async (categoryId) => {
 };
 
 const search = async (keyword) => {
-  const query = `
-    SELECT c.id, c.title, c.slug, c.price, c.level, c.thumbnail_url,
-           cat.name AS category, u.username AS instructor
-    FROM courses c
-    JOIN categories cat ON cat.id = c.category_id
-    JOIN users      u   ON u.id   = c.instructor_id
-    WHERE (c.title LIKE '%${keyword}%' OR c.description LIKE '%${keyword}%')
-    AND c.is_published = 1`;          // raw interpolation
-
+  const query = `SELECT c.id, c.title, c.slug, c.price, c.level, c.thumbnail_url, cat.name AS category, u.username AS instructor FROM courses c JOIN categories cat ON cat.id = c.category_id JOIN users u ON u.id = c.instructor_id WHERE (c.title LIKE '%${keyword}%' OR c.description LIKE '%${keyword}%') AND c.is_published = 1`;
   const [rows] = await db.query(query);
   return rows;
 };

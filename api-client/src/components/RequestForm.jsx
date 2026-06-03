@@ -9,6 +9,7 @@ const RequestForm = ({
   method      = 'GET',
   endpoint,
   children,           // optional extra inputs
+  onSubmit,
   loading     = false,
   submitLabel = 'Send',
 }) => (
