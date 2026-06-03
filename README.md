@@ -77,18 +77,6 @@ docker compose down -v
 
 ## Default Credentials
 
-> These are intentionally weak for security demonstration purposes.
-
-| Admin | admin@myeduconnect.my | admin123 |
-| Instructor | ahmad.razif@myeduconnect.my | teacher123 |
-| Instructor | nurul.aina@myeduconnect.my | instructor1 |
-| Student | ali.hassan@student.my | student123 |
-| Student | siti.rahimah@student.my | password123 |
-| Student | raj.kumar@student.my | password123 |
-| Student | wei.liang@student.my | password123 |
-| Student | farah.nadia@student.my | password123 |
-| Student | danial.hakimi@student.my | password123 |
-
 SSH access (container):
 ```bash
 ssh root@localhost -p 2222
