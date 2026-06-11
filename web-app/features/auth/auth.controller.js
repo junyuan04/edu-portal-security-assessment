@@ -44,4 +44,21 @@ const getMe = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, logout, getMe };
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'email is required' });
+    const result = await service.forgotPassword({ email });
+    res.json(result);
+  } catch (err) { next(err); }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    const result = await service.resetPassword({ token, password });
+    res.json(result);
+  } catch (err) { next(err); }
+};
+
+module.exports = { register, login, logout, getMe, forgotPassword, resetPassword };

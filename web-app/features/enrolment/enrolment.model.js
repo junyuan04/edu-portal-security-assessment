@@ -70,6 +70,17 @@ const cancel = async (id, userId) => {
   return result.affectedRows;
 };
 
-module.exports = { findByUserId, findById, findByUserAndCourse, create, updateProgress, cancel };
+// Reactivate a previously cancelled enrolment
+const reactivate = async (id) => {
+  const [result] = await db.query(
+    `UPDATE enrolments
+     SET status = 'active', progress_pct = 0, completed_at = NULL, enrolled_at = CURRENT_TIMESTAMP
+     WHERE id = ?`,
+    [id]
+  );
+  return result.affectedRows;
+};
+
+module.exports = { findByUserId, findById, findByUserAndCourse, create, updateProgress, cancel, reactivate };
 
 

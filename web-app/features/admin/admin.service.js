@@ -91,12 +91,48 @@ const updateAnnouncement = async (id, data, adminId) => {
   return (await model.getAnnouncements()).find((a) => a.id === id);
 };
 
+const deleteAnnouncement = async (id, adminId, ip) => {
+  const affected = await model.deleteAnnouncement(id);
+  if (affected === 0) {
+    const err = new Error('Announcement not found');
+    err.status = 404;
+    throw err;
+  }
+  await model.logAction(adminId, 'DELETE_ANNOUNCEMENT', 'announcement', id, {}, ip);
+  return { message: 'Announcement deleted' };
+};
+
+const deleteUser = async (id, adminId, ip) => {
+  if (Number(id) === Number(adminId)) {
+    const err = new Error('You cannot delete your own admin account');
+    err.status = 400;
+    throw err;
+  }
+  try {
+    const affected = await model.deleteUser(id);
+    if (affected === 0) {
+      const err = new Error('User not found');
+      err.status = 404;
+      throw err;
+    }
+  } catch (e) {
+    if (e.code === 'ER_ROW_IS_REFERENCED_2' || e.errno === 1451) {
+      const err = new Error('Cannot delete user with linked courses, payments, or audit history. Disable the account instead.');
+      err.status = 409;
+      throw err;
+    }
+    throw e;
+  }
+  await model.logAction(adminId, 'DELETE_USER', 'user', id, {}, ip);
+  return { message: 'User deleted' };
+};
+
 module.exports = {
-  getAllUsers, getUserById, toggleUserStatus,
+  getAllUsers, getUserById, toggleUserStatus, deleteUser,
   getAllCourses, toggleCoursePublished,
   getDashboardStats,
   getAuditLogs,
-  getAnnouncements, createAnnouncement, updateAnnouncement,
+  getAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement,
 };
 
 

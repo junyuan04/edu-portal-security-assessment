@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BookCopy } from 'lucide-react';
+import { BookCopy, Star } from 'lucide-react';
 
 const LEVEL_STYLES = {
   beginner:     'bg-green-100  text-green-700',
@@ -11,7 +11,11 @@ const CourseCard = ({ course }) => {
   const {
     id, title, slug, description, price,
     level, duration_hrs, category, instructor, thumbnail_url,
+    avg_rating, review_count,
   } = course;
+
+  const avg = Number(avg_rating) || 0;
+  const cnt = Number(review_count) || 0;
 
   return (
     <Link
@@ -36,6 +40,15 @@ const CourseCard = ({ course }) => {
       </div>
 
       <h3 className="font-semibold text-gray-900 leading-snug line-clamp-2">{title}</h3>
+
+      <div className="flex items-center gap-1 text-xs text-gray-500">
+        <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+        {cnt > 0 ? (
+          <span><strong className="text-gray-700">{avg.toFixed(1)}</strong> ({cnt})</span>
+        ) : (
+          <span className="text-gray-400">No reviews yet</span>
+        )}
+      </div>
 
       {description && (
         <p className="text-sm text-gray-500 line-clamp-2">{description}</p>

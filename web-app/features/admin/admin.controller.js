@@ -119,12 +119,26 @@ const updateAnnouncement = async (req, res, next) => {
   }
 };
 
+const deleteUser = async (req, res, next) => {
+  try {
+    const result = await service.deleteUser(Number(req.params.id), req.user.id, req.ip);
+    res.json(result);
+  } catch (err) { next(err); }
+};
+
+const deleteAnnouncement = async (req, res, next) => {
+  try {
+    const result = await service.deleteAnnouncement(Number(req.params.id), req.user.id, req.ip);
+    res.json(result);
+  } catch (err) { next(err); }
+};
+
 module.exports = {
   getDashboardStats,
-  getAllUsers, getUserById, toggleUserStatus,
+  getAllUsers, getUserById, toggleUserStatus, deleteUser,
   getAllCourses, toggleCoursePublished,
   getAuditLogs,
-  getAnnouncements, createAnnouncement, updateAnnouncement,
+  getAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement,
 };
 
 

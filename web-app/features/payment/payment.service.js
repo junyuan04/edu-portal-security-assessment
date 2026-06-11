@@ -54,6 +54,16 @@ const createPayment = async (userId, { courseId, paymentMethod, cardLastFour }) 
   );
 
   if (existingPayment.length > 0) {
+    // Allow the user to skip re-paying for a course they cancelled
+    const [enrolRows] = await db.query(
+      'SELECT id, status FROM enrolments WHERE user_id = ? AND course_id = ?',
+      [userId, courseId]
+    );
+    const enrol = enrolRows[0];
+    if (enrol && enrol.status === 'cancelled') {
+      await model.createEnrolment(userId, courseId); // upserts → active
+      return model.findById(existingPayment[0].id, userId);
+    }
     const err = new Error('Course already purchased');
     err.status = 409;
     throw err;

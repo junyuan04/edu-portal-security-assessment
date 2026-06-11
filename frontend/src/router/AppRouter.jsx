@@ -1,9 +1,11 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-import LoginPage        from '../features/auth/LoginPage';
-import RegisterPage     from '../features/auth/RegisterPage';
-import CourseListPage   from '../features/courses/CourseListPage';
+import LoginPage           from '../features/auth/LoginPage';
+import RegisterPage        from '../features/auth/RegisterPage';
+import ForgotPasswordPage  from '../features/auth/ForgotPasswordPage';
+import ResetPasswordPage   from '../features/auth/ResetPasswordPage';
+import CourseListPage      from '../features/courses/CourseListPage';
 import CourseDetailPage from '../features/courses/CourseDetailPage';
 import EnrolmentPage    from '../features/enrolment/EnrolmentPage';
 import PaymentPage      from '../features/payment/PaymentPage';
@@ -37,9 +39,11 @@ const AppRouter = () => (
   <Routes>
     <Route path="/" element={<Navigate to="/courses" replace />} />
 
-    <Route path="/login"    element={<LoginPage />} />
-    <Route path="/register" element={<RegisterPage />} />
-    <Route path="/courses"  element={<CourseListPage />} />
+    <Route path="/login"           element={<LoginPage />} />
+    <Route path="/register"        element={<RegisterPage />} />
+    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+    <Route path="/reset-password"  element={<ResetPasswordPage />} />
+    <Route path="/courses"         element={<CourseListPage />} />
     <Route path="/courses/:id" element={<CourseDetailPage />} />
 
     {/* Protected (requires login) */}

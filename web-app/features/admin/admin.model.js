@@ -127,12 +127,22 @@ const updateAnnouncement = async (id, { title, body, isActive }) => {
   return result.affectedRows;
 };
 
+const deleteAnnouncement = async (id) => {
+  const [result] = await db.query('DELETE FROM announcements WHERE id = ?', [id]);
+  return result.affectedRows;
+};
+
+const deleteUser = async (id) => {
+  const [result] = await db.query('DELETE FROM users WHERE id = ?', [id]);
+  return result.affectedRows;
+};
+
 module.exports = {
-  getAllUsers, getUserById, updateUserStatus,
+  getAllUsers, getUserById, updateUserStatus, deleteUser,
   getAllCourses, updateCoursePublished,
   getDashboardStats,
   getAuditLogs, logAction,
-  getAnnouncements, createAnnouncement, updateAnnouncement,
+  getAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement,
 };
 
 

@@ -30,12 +30,18 @@ const createAnnouncement = (title, body) =>
 const updateAnnouncement = (id, data) =>
   api.put(`/admin/announcements/${id}`, data).then((r) => r.data);
 
+const deleteAnnouncement = (id) =>
+  api.delete(`/admin/announcements/${id}`).then((r) => r.data);
+
+const deleteUser = (id) =>
+  api.delete(`/admin/users/${id}`).then((r) => r.data);
+
 export default {
   getDashboardStats,
-  getAllUsers, getUserById, toggleUserStatus,
+  getAllUsers, getUserById, toggleUserStatus, deleteUser,
   getAllCourses, toggleCoursePublished,
   getAuditLogs,
-  getAnnouncements, createAnnouncement, updateAnnouncement,
+  getAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement,
 };
 
 
