@@ -141,8 +141,6 @@ const UsersSection = () => {
       <Modal isOpen={!!deleteTarget} onClose={() => { setDeleteTarget(null); setError(null); }} title="Delete user">
         <p className="text-sm text-gray-600 mb-4">
           Permanently delete <strong>{deleteTarget?.full_name || deleteTarget?.username}</strong>?
-          This cannot be undone. Users with linked courses or audit history cannot be deleted —
-          disable the account instead.
         </p>
         {error && (
           <p className="text-sm text-red-600 mb-3">{error}</p>

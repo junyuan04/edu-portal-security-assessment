@@ -267,6 +267,7 @@ const CourseDetailPage = () => {
 
   const isFree    = parseFloat(course.price) === 0;
   const isEnrolled = enrolment && enrolment.status !== 'cancelled';
+  const isAdmin   = user?.role === 'admin';
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -324,30 +325,30 @@ const CourseDetailPage = () => {
           <div className="card">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold">Reviews ({reviews.length})</h2>
-              {isAuthenticated && isEnrolled && !myReview && !showForm && (
+              {!isAdmin && isAuthenticated && isEnrolled && !myReview && !showForm && (
                 <Button variant="secondary" onClick={() => { setShowForm(true); setReviewError(null); }}>
                   Write a review
                 </Button>
               )}
             </div>
 
-            {!isAuthenticated && (
+            {!isAdmin && !isAuthenticated && (
               <p className="text-xs text-gray-400 mb-4">
                 <Link to="/login" className="text-primary-600 hover:underline">Sign in</Link> to write a review.
               </p>
             )}
 
-            {isAuthenticated && !isEnrolled && (
+            {!isAdmin && isAuthenticated && !isEnrolled && (
               <p className="text-xs text-gray-400 mb-4">Enrol in this course to leave a review.</p>
             )}
 
-            {isAuthenticated && isEnrolled && myReview && !editingMine && (
+            {!isAdmin && isAuthenticated && isEnrolled && myReview && !editingMine && (
               <p className="text-xs text-gray-400 mb-4">
                 You already reviewed this course. Use the edit / delete buttons on your review below.
               </p>
             )}
 
-            {showForm && !myReview && (
+            {!isAdmin && showForm && !myReview && (
               <div className="mb-4">
                 <ReviewForm
                   onSubmit={handleCreateReview}
@@ -358,7 +359,7 @@ const CourseDetailPage = () => {
               </div>
             )}
 
-            {editingMine && myReview && (
+            {!isAdmin && editingMine && myReview && (
               <div className="mb-4">
                 <ReviewForm
                   initial={myReview}
@@ -372,7 +373,7 @@ const CourseDetailPage = () => {
 
             <ReviewsList
               reviews={reviews}
-              currentUserId={user?.id}
+              currentUserId={isAdmin ? null : user?.id}
               onEdit={() => { setEditingMine(true); setReviewError(null); }}
               onDelete={handleDeleteReview}
             />
@@ -395,7 +396,11 @@ const CourseDetailPage = () => {
             </div>
 
             {/* CTA */}
-            {isEnrolled ? (
+            {isAdmin ? (
+              <div className="text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+                Admin preview mode
+              </div>
+            ) : isEnrolled ? (
               <div className="flex flex-col gap-2">
                 <div className="text-sm text-accent-600 font-medium">✓ Enrolled</div>
                 <div className="w-full bg-gray-100 rounded-full h-2">

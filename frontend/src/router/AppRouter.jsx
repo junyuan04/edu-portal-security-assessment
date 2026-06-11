@@ -18,6 +18,14 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
+// Student-only paths
+const StudentRoute = ({ children }) => {
+  const { isAuthenticated, user } = useAuth();
+  if (!isAuthenticated)       return <Navigate to="/login" replace />;
+  if (user?.role === 'admin') return <Navigate to="/admin" replace />;
+  return children;
+};
+
 // Redirects non-admin users to /courses
 const AdminRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
@@ -46,15 +54,15 @@ const AppRouter = () => (
     <Route path="/courses"         element={<CourseListPage />} />
     <Route path="/courses/:id" element={<CourseDetailPage />} />
 
-    {/* Protected (requires login) */}
+    {/* Student-only (admins → /admin) */}
     <Route path="/profile" element={
-      <ProtectedRoute><ProfilePage /></ProtectedRoute>
+      <StudentRoute><ProfilePage /></StudentRoute>
     } />
     <Route path="/my-enrolments" element={
-      <ProtectedRoute><EnrolmentPage /></ProtectedRoute>
+      <StudentRoute><EnrolmentPage /></StudentRoute>
     } />
     <Route path="/payment/:courseId" element={
-      <ProtectedRoute><PaymentPage /></ProtectedRoute>
+      <StudentRoute><PaymentPage /></StudentRoute>
     } />
 
     <Route path="/admin" element={

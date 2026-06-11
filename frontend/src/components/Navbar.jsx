@@ -25,6 +25,8 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const isAdmin = user?.role === 'admin';
+
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,16 +38,20 @@ const Navbar = () => {
 
           <nav className="hidden md:flex items-center gap-6">
             <NavItem to="/courses">Courses</NavItem>
-            {isAuthenticated && <NavItem to="/my-enrolments">My Learning</NavItem>}
-            {user?.role === 'admin' && <NavItem to="/admin">Admin</NavItem>}
+            {isAuthenticated && !isAdmin && <NavItem to="/my-enrolments">My Learning</NavItem>}
+            {isAdmin && <NavItem to="/admin">Admin</NavItem>}
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
             {isAuthenticated ? (
               <>
-                <NavLink to="/profile" className="text-sm text-gray-600 hover:text-gray-900 font-medium">
-                  {user?.username}
-                </NavLink>
+                {isAdmin ? (
+                  <span className="text-sm text-gray-600 font-medium">{user?.username}</span>
+                ) : (
+                  <NavLink to="/profile" className="text-sm text-gray-600 hover:text-gray-900 font-medium">
+                    {user?.username}
+                  </NavLink>
+                )}
                 <button onClick={handleLogout} className="btn-secondary text-sm">
                   Logout
                 </button>
@@ -71,11 +77,11 @@ const Navbar = () => {
       {menuOpen && (
         <div className="md:hidden border-t border-gray-100 px-4 py-3 flex flex-col gap-3 bg-white">
           <NavItem to="/courses">Courses</NavItem>
-          {isAuthenticated && <NavItem to="/my-enrolments">My Learning</NavItem>}
-          {user?.role === 'admin' && <NavItem to="/admin">Admin</NavItem>}
+          {isAuthenticated && !isAdmin && <NavItem to="/my-enrolments">My Learning</NavItem>}
+          {isAdmin && <NavItem to="/admin">Admin</NavItem>}
           {isAuthenticated ? (
             <>
-              <NavItem to="/profile">Profile</NavItem>
+              {!isAdmin && <NavItem to="/profile">Profile</NavItem>}
               <button onClick={handleLogout} className="text-left text-sm text-red-600 font-medium">
                 Logout
               </button>
