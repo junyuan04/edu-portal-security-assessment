@@ -12,6 +12,12 @@ const logout = () =>
 const getMe = () =>
   api.get('/auth/me').then((r) => r.data);
 
-export default { register, login, logout, getMe };
+const forgotPassword = (email) =>
+  api.post('/auth/forgot-password', { email }).then((r) => r.data);
+
+const resetPassword = (token, password) =>
+  api.post('/auth/reset-password', { token, password }).then((r) => r.data);
+
+export default { register, login, logout, getMe, forgotPassword, resetPassword };
 
 

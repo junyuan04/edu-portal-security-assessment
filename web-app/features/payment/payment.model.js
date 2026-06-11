@@ -50,7 +50,13 @@ const updateStatus = async (id, status, transactionRef) => {
 // Enrol user after successful payment
 const createEnrolment = async (userId, courseId) => {
   await db.query(
-    `INSERT IGNORE INTO enrolments (user_id, course_id) VALUES (?, ?)`,
+    `INSERT INTO enrolments (user_id, course_id, status, progress_pct, enrolled_at, completed_at)
+     VALUES (?, ?, 'active', 0, CURRENT_TIMESTAMP, NULL)
+     ON DUPLICATE KEY UPDATE
+       status       = 'active',
+       progress_pct = 0,
+       enrolled_at  = CURRENT_TIMESTAMP,
+       completed_at = NULL`,
     [userId, courseId]
   );
 };

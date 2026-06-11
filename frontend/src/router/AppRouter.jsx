@@ -1,9 +1,11 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-import LoginPage        from '../features/auth/LoginPage';
-import RegisterPage     from '../features/auth/RegisterPage';
-import CourseListPage   from '../features/courses/CourseListPage';
+import LoginPage           from '../features/auth/LoginPage';
+import RegisterPage        from '../features/auth/RegisterPage';
+import ForgotPasswordPage  from '../features/auth/ForgotPasswordPage';
+import ResetPasswordPage   from '../features/auth/ResetPasswordPage';
+import CourseListPage      from '../features/courses/CourseListPage';
 import CourseDetailPage from '../features/courses/CourseDetailPage';
 import EnrolmentPage    from '../features/enrolment/EnrolmentPage';
 import PaymentPage      from '../features/payment/PaymentPage';
@@ -14,6 +16,14 @@ import AdminDashboard   from '../features/admin/AdminDashboard';
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
+
+// Student-only paths
+const StudentRoute = ({ children }) => {
+  const { isAuthenticated, user } = useAuth();
+  if (!isAuthenticated)       return <Navigate to="/login" replace />;
+  if (user?.role === 'admin') return <Navigate to="/admin" replace />;
+  return children;
 };
 
 // Redirects non-admin users to /courses
@@ -37,20 +47,22 @@ const AppRouter = () => (
   <Routes>
     <Route path="/" element={<Navigate to="/courses" replace />} />
 
-    <Route path="/login"    element={<LoginPage />} />
-    <Route path="/register" element={<RegisterPage />} />
-    <Route path="/courses"  element={<CourseListPage />} />
+    <Route path="/login"           element={<LoginPage />} />
+    <Route path="/register"        element={<RegisterPage />} />
+    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+    <Route path="/reset-password"  element={<ResetPasswordPage />} />
+    <Route path="/courses"         element={<CourseListPage />} />
     <Route path="/courses/:id" element={<CourseDetailPage />} />
 
-    {/* Protected (requires login) */}
+    {/* Student-only (admins → /admin) */}
     <Route path="/profile" element={
-      <ProtectedRoute><ProfilePage /></ProtectedRoute>
+      <StudentRoute><ProfilePage /></StudentRoute>
     } />
     <Route path="/my-enrolments" element={
-      <ProtectedRoute><EnrolmentPage /></ProtectedRoute>
+      <StudentRoute><EnrolmentPage /></StudentRoute>
     } />
     <Route path="/payment/:courseId" element={
-      <ProtectedRoute><PaymentPage /></ProtectedRoute>
+      <StudentRoute><PaymentPage /></StudentRoute>
     } />
 
     <Route path="/admin" element={

@@ -29,9 +29,13 @@ const enrolInCourse = async (userId, courseId) => {
     throw err;
   }
 
-  // prevent duplicate enrolment
+  // Reactivate a cancelled enrolment instead of blocking it
   const existing = await model.findByUserAndCourse(userId, courseId);
   if (existing) {
+    if (existing.status === 'cancelled') {
+      await model.reactivate(existing.id);
+      return model.findById(existing.id, userId);
+    }
     const err = new Error('Already enrolled in this course');
     err.status = 409;
     throw err;

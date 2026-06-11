@@ -36,6 +36,40 @@ const createUserProfile = async (userId, fullName) => {
   );
 };
 
-module.exports = { findByEmail, findById, createUser, createUserProfile };
+const createResetToken = async (userId, token, expiresAt) => {
+  await db.query(
+    `INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)`,
+    [userId, token, expiresAt]
+  );
+};
+
+const findResetToken = async (token) => {
+  const [rows] = await db.query(
+    `SELECT id, user_id, expires_at, used
+     FROM password_reset_tokens
+     WHERE token = ?`,
+    [token]
+  );
+  return rows[0] || null;
+};
+
+const markResetTokenUsed = async (id) => {
+  await db.query(
+    `UPDATE password_reset_tokens SET used = 1 WHERE id = ?`,
+    [id]
+  );
+};
+
+const updatePassword = async (userId, passwordHash) => {
+  await db.query(
+    `UPDATE users SET password_hash = ? WHERE id = ?`,
+    [passwordHash, userId]
+  );
+};
+
+module.exports = {
+  findByEmail, findById, createUser, createUserProfile,
+  createResetToken, findResetToken, markResetTokenUsed, updatePassword,
+};
 
 
