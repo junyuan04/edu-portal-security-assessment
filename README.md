@@ -8,23 +8,6 @@ penetration-testing lifecycle: **build → attack → harden → re-test**. The 
 **both** a deliberately vulnerable build and a hardened ("secure") build of every finding, so the
 same attacks can be demonstrated succeeding and then failing.
 
----
-
-## Table of Contents
-
-1. [Architecture](#1-architecture)
-2. [Prerequisites](#2-prerequisites)
-3. [Part A — Deploy the Vulnerable Stack (Phase 1)](#3-part-a--deploy-the-vulnerable-stack-phase-1)
-4. [Part B — Deploy the Secure Stack (Phase 5)](#4-part-b--deploy-the-secure-stack-phase-5)
-5. [The `SECURE_MODE` Runtime Toggle (V1–V4, V6, V7)](#5-the-secure_mode-runtime-toggle-v1v4-v6-v7)
-6. [Vulnerability & Remediation Matrix](#6-vulnerability--remediation-matrix)
-7. [Re-test / Smoke Tests (before vs after)](#7-re-test--smoke-tests-before-vs-after)
-8. [Network Defence Controls (WAF / IDS / Firewall)](#8-network-defence-controls-waf--ids--firewall)
-9. [Run Both Stacks Side-by-Side](#9-run-both-stacks-side-by-side)
-10. [Default Credentials](#10-default-credentials)
-11. [Known Caveats & Residual Risks](#11-known-caveats--residual-risks)
-
----
 
 ## 1. Architecture
 
@@ -159,44 +142,6 @@ docker compose -f docker-compose.secure.yml down        # add -v to wipe its DB 
 
 ---
 
-## 5. The `SECURE_MODE` Runtime Toggle (V1–V4, V6, V7)
-
-Six of the eight findings can be flipped **at runtime — no rebuild** — via a DB-backed flag
-(`system_config.secure_mode`). V5 and V8 are **build-time** (choose the compose file in Part A vs B).
-
-> The flag is cached in-process for **5 seconds** — wait that long after flipping before re-testing.
-
-### Option A — Admin Dashboard (recommended)
-
-1. Log in as admin (`admin@myeduconnect.my` / `admin123`).
-2. Open the admin panel → **Overview** tab.
-3. The first card shows the current mode. Click the switch to flip it.
-
-### Option B — curl
-
-```bash
-# Read current mode (public)
-curl http://localhost:8080/api/system/secure-mode
-
-# Flip to secure (admin token required)
-curl -X PUT \
-  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"secure": true}' \
-  http://localhost:8080/api/system/secure-mode
-
-# Flip back to vulnerable
-curl -X PUT \
-  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"secure": false}' \
-  http://localhost:8080/api/system/secure-mode
-```
-
-> On the secure stack, target `https://localhost:8081/...` instead (add `-k` for the self-signed cert).
-
----
-
 ## 6. Vulnerability & Remediation Matrix
 
 | Vuln | OWASP | Vulnerable behaviour (default) | Secure-mode fix | Toggle |
@@ -288,17 +233,3 @@ Seeded instructor and student accounts also exist (`*.@myeduconnect.my`, `*.@stu
 crackable MD5 hashes — see `web-app/database/seed.sql`.
 
 ---
-
-## 11. Known Caveats & Residual Risks
-
-- **Flag staleness.** The 5-second per-process cache means a runtime flip takes up to ~5s to fully
-  propagate across `web-app` + `api-server`. Wait before re-testing.
-- **Vulnerable-mode tokens are invalidated on flip.** With V4 hard-fixed, `verifyToken` branches on
-  `SECURE_MODE`: secure mode accepts only `JWT_SECRET_SECURE`-signed tokens. Flipping vulnerable→secure
-  forces a one-time re-login (in practice, the admin account). This is the trade for an actually fixed V4.
-- **`JWT_SECRET_SECURE` is mandatory.** Both backends fail to start if it is missing or < 32 chars.
-- **V6 is intentionally lightweight at the app layer.** A real IP allowlist would lock the operator out
-  of the toggle endpoint; the primary defence is V4 (forged tokens fail) plus the edge WAF rule.
-- **Self-signed TLS.** The secure stack uses a self-signed cert — browsers warn at
-  `https://localhost:8081`. Replace with a real cert (Let's Encrypt / vault) for any non-localhost use.
-- **Suricata detects, it does not block.** Treat its alerts as monitoring, not enforcement.
