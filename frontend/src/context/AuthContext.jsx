@@ -24,8 +24,14 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   }, []);
 
+  // Token-only swap, used when the server re-signs the caller's identity
+  const replaceToken = useCallback((newToken) => {
+    localStorage.setItem('mec_token', newToken);
+    setToken(newToken);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, logout, replaceToken }}>
       {children}
     </AuthContext.Provider>
   );

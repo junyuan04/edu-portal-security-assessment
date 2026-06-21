@@ -1,6 +1,11 @@
 USE myeduconnect;
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- SYSTEM CONFIG — default to vulnerable mode.
+INSERT INTO system_config (config_key, config_value) VALUES
+    ('secure_mode', 'false')
+ON DUPLICATE KEY UPDATE config_value = config_value;
+
 -- ROLES
 INSERT INTO roles (id, name, description) VALUES
     (1, 'admin',      'Platform administrator with full access'),
@@ -193,3 +198,5 @@ INSERT INTO announcements (admin_id, title, body, is_active) VALUES
         0);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+

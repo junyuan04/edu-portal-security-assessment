@@ -37,7 +37,7 @@ const Navbar = () => {
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
-            <NavItem to="/courses">Courses</NavItem>
+            {isAuthenticated && <NavItem to="/courses">Courses</NavItem>}
             {isAuthenticated && !isAdmin && <NavItem to="/my-enrolments">My Learning</NavItem>}
             {isAdmin && <NavItem to="/admin">Admin</NavItem>}
           </nav>
@@ -76,7 +76,7 @@ const Navbar = () => {
 
       {menuOpen && (
         <div className="md:hidden border-t border-gray-100 px-4 py-3 flex flex-col gap-3 bg-white">
-          <NavItem to="/courses">Courses</NavItem>
+          {isAuthenticated && <NavItem to="/courses">Courses</NavItem>}
           {isAuthenticated && !isAdmin && <NavItem to="/my-enrolments">My Learning</NavItem>}
           {isAdmin && <NavItem to="/admin">Admin</NavItem>}
           {isAuthenticated ? (

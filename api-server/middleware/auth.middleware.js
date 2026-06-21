@@ -1,7 +1,16 @@
 const jwt = require('jsonwebtoken');
-const env  = require('../config/env');
+const env = require('../config/env');
+const { isSecureMode } = require('../config/secureMode');
 
-const authMiddleware = (req, res, next) => {
+// Mode-aware verify
+const verifyToken = async (token) => {
+  if (await isSecureMode()) {
+    return jwt.verify(token, env.JWT_SECRET_SECURE, { algorithms: ['HS256'] });
+  }
+  return jwt.verify(token, env.JWT_SECRET);
+};
+
+const authMiddleware = async (req, res, next) => {
   const header = req.headers['authorization'];
 
   if (!header?.startsWith('Bearer ')) {
@@ -9,7 +18,7 @@ const authMiddleware = (req, res, next) => {
   }
 
   try {
-    req.user = jwt.verify(header.split(' ')[1], env.JWT_SECRET);
+    req.user = await verifyToken(header.split(' ')[1]);
     next();
   } catch {
     return res.status(401).json({ error: 'Invalid or expired token' });
@@ -17,3 +26,5 @@ const authMiddleware = (req, res, next) => {
 };
 
 module.exports = { authMiddleware };
+
+

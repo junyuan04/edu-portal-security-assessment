@@ -36,12 +36,20 @@ const deleteAnnouncement = (id) =>
 const deleteUser = (id) =>
   api.delete(`/admin/users/${id}`).then((r) => r.data);
 
+const getSecureMode = () =>
+  api.get('/system/secure-mode').then((r) => !!r.data?.secure);
+
+const setSecureMode = (secure) =>
+  api.put('/system/secure-mode', { secure })
+    .then((r) => ({ secure: !!r.data?.secure, token: r.data?.token || null }));
+
 export default {
   getDashboardStats,
   getAllUsers, getUserById, toggleUserStatus, deleteUser,
   getAllCourses, toggleCoursePublished,
   getAuditLogs,
   getAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement,
+  getSecureMode, setSecureMode,
 };
 
 

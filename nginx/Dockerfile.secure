@@ -1,0 +1,34 @@
+# TLS termination at the edge + ModSecurity 3
+#
+# Base image bundles:
+#   - nginx (with ngx_http_modsecurity_module already compiled in)
+#   - libmodsecurity3
+#   - OWASP CRS v4 under /etc/modsecurity.d/owasp-crs/
+#
+# Self-signed cert is generated at build time for the demo. Replace with a real
+# cert for any non-localhost environment.
+FROM owasp/modsecurity-crs:nginx-alpine
+
+USER root
+
+# TLS material.
+RUN apk add --no-cache openssl \
+    && mkdir -p /etc/nginx/ssl \
+    && openssl req -x509 -nodes -days 365 \
+        -newkey rsa:2048 \
+        -keyout /etc/nginx/ssl/myeduconnect.key \
+        -out    /etc/nginx/ssl/myeduconnect.crt \
+        -subj   "/C=MY/ST=KL/L=KL/O=MyEduConnect/CN=localhost" \
+    && chmod 600 /etc/nginx/ssl/myeduconnect.key
+
+# Custom WAF rules layered on top of CRS.
+COPY modsec/custom-rules.conf /etc/modsecurity.d/include_custom.conf
+RUN echo 'Include /etc/modsecurity.d/include_custom.conf' >> /etc/modsecurity.d/setup.conf
+
+# nginx server config replaces the image default. 
+COPY nginx.secure.conf /etc/nginx/templates/conf.d/default.conf.template
+
+EXPOSE 80 443
+
+
+

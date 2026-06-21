@@ -20,8 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
     role_id        TINYINT      UNSIGNED NOT NULL DEFAULT 3,
     email          VARCHAR(150) NOT NULL,
     username       VARCHAR(50)  NOT NULL,
-    password_hash  VARCHAR(32)  NOT NULL,                        -- [VULN-V7] MD5 only
-    is_active      TINYINT(1)   NOT NULL DEFAULT 1,
+    password_hash  VARCHAR(255) NOT NULL, 
     created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
@@ -190,6 +189,15 @@ CREATE TABLE IF NOT EXISTS admin_audit_logs (
     INDEX idx_audit_admin  (admin_id),
     INDEX idx_audit_action (action),
     CONSTRAINT fk_audit_admin FOREIGN KEY (admin_id) REFERENCES users (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- DOMAIN 6: Runtime System Config (powers the SECURE_MODE toggle)
+
+CREATE TABLE IF NOT EXISTS system_config (
+    config_key   VARCHAR(64)  NOT NULL,
+    config_value VARCHAR(255) NOT NULL,
+    updated_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (config_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

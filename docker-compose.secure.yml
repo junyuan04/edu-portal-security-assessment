@@ -1,0 +1,158 @@
+# MyEduConnect -- Secure Compose Profile (Phase 5)
+#
+# Usage:
+#   docker compose -f docker-compose.secure.yml up --build
+#
+# Access:
+#   Main portal - https://localhost:8081   (self-signed cert: browser warning is expected)
+#   HTTP        - not published (the :80 block only 301s to https)
+#   SSH (V5)    - no longer exposed
+#   WAF audit   - docker exec myeduconnect-secure-nginx-1 tail -f /var/log/modsec_audit.log
+#   IDS alerts  - docker exec myeduconnect-secure-suricata-1 tail -f /var/log/suricata/fast.log
+
+name: myeduconnect-secure
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE:      ${DB_NAME}
+      MYSQL_USER:          ${DB_USER}
+      MYSQL_PASSWORD:      ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./web-app/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./web-app/database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    networks:
+      - data-net
+    healthcheck:
+      test:     ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout:  5s
+      retries:  10
+
+  web-app:
+    build:
+      context:    ./web-app
+      dockerfile: Dockerfile.secure
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-net
+      - data-net
+
+  api-server:
+    build:
+      context:    ./api-server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-net
+      - data-net
+
+  frontend:
+    build:
+      context:    ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  api-client:
+    build:
+      context:    ./api-client
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  nginx:
+    build:
+      context:    ./nginx
+      dockerfile: Dockerfile.secure
+    restart: unless-stopped
+    environment:
+      # Blocking mode & paranoia level 1.
+      MODSEC_RULE_ENGINE:   "On"
+      PARANOIA:             "1"
+      BLOCKING_PARANOIA:    "1"
+      ANOMALY_INBOUND:      "5"
+      ANOMALY_OUTBOUND:     "4"
+      MODSEC_AUDIT_ENGINE:  "RelevantOnly"
+      MODSEC_AUDIT_LOG:     "/var/log/modsec_audit.log"
+      ALLOWED_METHODS:      "GET HEAD POST OPTIONS PUT PATCH DELETE"
+    ports:
+      - "8081:443"
+    depends_on:
+      - web-app
+      - api-server
+      - frontend
+      - api-client
+    networks:
+      - edge-net
+      - app-net
+    volumes:
+      - modsec_audit:/var/log
+
+  # IDS sidecar.
+  suricata:
+    image: jasonish/suricata:7.0
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_NICE
+    network_mode: "service:nginx"
+    depends_on:
+      - nginx
+    
+    # Capture BOTH interfaces in nginx's namespace.
+    command:
+      - /usr/bin/suricata
+      - -c
+      - /etc/suricata/suricata.yaml
+      - -i
+      - eth0
+      - -i
+      - eth1
+      - -v
+    volumes:
+      - ./suricata/suricata.yaml:/etc/suricata/suricata.yaml:ro
+      - ./suricata/rules:/etc/suricata/rules:ro
+      - suricata_logs:/var/log/suricata
+
+volumes:
+  mysql_data:
+  modsec_audit:
+  suricata_logs:
+
+networks:
+  # Edge zone (only nginx and, via shared namespace, suricata) lives here.
+  # The host port mappings sit on this network.
+  edge-net:
+    driver: bridge
+  # App zone (nginx talks to backends here).
+  app-net:
+    driver: bridge
+    internal: true
+  # Data zone (only web-app, api-server and mysql)
+  # No internet route
+  data-net:
+    driver: bridge
+    internal: true
+
+

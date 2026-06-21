@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import SecureModeBadge from './components/SecureModeBadge';
 import AppRouter from './router/AppRouter';
 
 // Scroll to top on every route change
@@ -19,6 +20,7 @@ const App = () => (
       <AppRouter />
     </main>
     <Footer />
+    <SecureModeBadge />
   </div>
 );
 

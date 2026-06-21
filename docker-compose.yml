@@ -1,14 +1,17 @@
-# MyEduConnect — Docker Compose
+# MyEduConnect — Docker Compose (VULNERABLE)
 #
 # Usage:
 #   cp .env.example .env   # fill in values
-#   docker compose up --build
+#   docker compose up --build or docker compose -p myeduconnect-vuln up --build
 # Access:
-#   Main portal  → http://localhost
-#   REST API     → http://localhost/rest
-#   API client   → http://localhost/api-client
-#   Admin panel  → http://localhost/admin
+#   Main portal  → http://localhost:8080
+#   REST API     → http://localhost:8080/rest
+#   API client   → http://localhost:8080/api-client
+#   Admin panel  → http://localhost:8080/admin
+#   MySQL        → localhost:3306  (intentionally exposed to the host)
 #   SSH (V5)     → ssh root@localhost -p 2222  /  password: admin123
+
+name: myeduconnect-vuln
 
 services:
 
@@ -25,6 +28,8 @@ services:
       - mysql_data:/var/lib/mysql
       - ./web-app/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
       - ./web-app/database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    ports:
+      - "${DB_PORT:-3306}:3306"
     networks:
       - internal
     healthcheck:
@@ -45,12 +50,13 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    # docker-compose.yml
     ports:
       - "${SSH_PORT:-2222}:22"
     networks:
       - internal
 
-  # API server (REST API — additional component)
+  # API server (REST API)
   api-server:
     build:
       context:    ./api-server
@@ -90,7 +96,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "${NGINX_HTTP_PORT:-80}:80"
+      - "8080:80"
     depends_on:
       - web-app
       - api-server

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import userService from '../../services/user.service';
 import { useAuth } from '../../context/AuthContext';
+import { useSecureMode } from '../../hooks/useSecureMode';
 import InputField from '../../components/InputField';
 import Button     from '../../components/Button';
 
-const ProfileView = ({ profile, onEdit }) => (
+const ProfileView = ({ profile, onEdit, secure }) => (
   <div className="flex flex-col gap-6">
 
     {/* Avatar + name */}
@@ -46,10 +47,18 @@ const ProfileView = ({ profile, onEdit }) => (
     {profile.bio && (
       <div>
         <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Bio</p>
-        <div
-          className="text-sm text-gray-700 leading-relaxed prose prose-sm max-w-none"
-          dangerouslySetInnerHTML={{ __html: profile.bio }} 
-        />
+        {secure ? (
+          // Secure path to render as plain text.
+          <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+            {profile.bio}
+          </p>
+        ) : (
+          // Vulnerable path: raw HTML injection sink.
+          <div
+            className="text-sm text-gray-700 leading-relaxed prose prose-sm max-w-none"
+            dangerouslySetInnerHTML={{ __html: profile.bio }}
+          />
+        )}
       </div>
     )}
 
@@ -138,6 +147,7 @@ const ProfileEditForm = ({ profile, onSave, onCancel }) => {
 
 const ProfilePage = () => {
   const { user } = useAuth();
+  const { secure } = useSecureMode();
 
   const [profile,  setProfile]  = useState(null);
   const [loading,  setLoading]  = useState(true);
@@ -205,6 +215,7 @@ const ProfilePage = () => {
           <ProfileView
             profile={profile}
             onEdit={() => setEditMode(true)}
+            secure={!!secure}
           />
         )}
       </div>
