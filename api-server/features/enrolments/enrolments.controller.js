@@ -1,4 +1,5 @@
 const service = require('./enrolments.service');
+const { isSecureMode } = require('../../config/secureMode');
 
 const getMyEnrolments = async (req, res, next) => {
   try {
@@ -10,6 +11,17 @@ const getMyEnrolments = async (req, res, next) => {
 const getEnrolment = async (req, res, next) => {
   try {
     const enrolment = await service.getEnrolmentById(Number(req.params.id));
+
+    if (await isSecureMode()) {
+      // Secure Mode: only the owner (or admin) can read an enrolment record.
+      if (!enrolment) return res.status(404).json({ error: 'Enrolment not found' });
+      const isOwner = enrolment.user_id === req.user.id;
+      const isAdmin = req.user.role === 'admin';
+      if (!isOwner && !isAdmin) {
+        return res.status(404).json({ error: 'Enrolment not found' });
+      }
+    }
+    // Vulnerable path: no ownership check
     res.json(enrolment);
   } catch (err) { next(err); }
 };

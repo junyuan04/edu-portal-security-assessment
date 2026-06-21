@@ -1,4 +1,5 @@
 const db = require('../../config/db');
+const { isSecureMode } = require('../../config/secureMode');
 
 const RATING_AGG = `
   (SELECT COALESCE(AVG(rating), 0) FROM course_reviews WHERE course_id = c.id) AS avg_rating,
@@ -27,7 +28,18 @@ const findAllPublished = async (categoryId) => {
 };
 
 const search = async (keyword) => {
-  const query = `SELECT c.id, c.title, c.slug, c.price, c.level, c.thumbnail_url, cat.name AS category, u.username AS instructor, ${RATING_AGG} FROM courses c JOIN categories cat ON cat.id = c.category_id JOIN users u ON u.id = c.instructor_id WHERE (c.title LIKE '%${keyword}%' OR c.description LIKE '%${keyword}%') AND c.is_published = 1`;
+  const SELECT_COLS = `SELECT c.id, c.title, c.slug, c.price, c.level, c.thumbnail_url, cat.name AS category, u.username AS instructor, ${RATING_AGG} FROM courses c JOIN categories cat ON cat.id = c.category_id JOIN users u ON u.id = c.instructor_id`;
+
+  if (await isSecureMode()) {
+    const safe = String(keyword || '').slice(0, 100).replace(/[\\%_]/g, '\\$&');
+    const [rows] = await db.query(
+      `${SELECT_COLS} WHERE (c.title LIKE ? OR c.description LIKE ?) AND c.is_published = 1`,
+      [`%${safe}%`, `%${safe}%`]
+    );
+    return rows;
+  }
+
+  const query = `${SELECT_COLS} WHERE (c.title LIKE '%${keyword}%' OR c.description LIKE '%${keyword}%') AND c.is_published = 1`;
   const [rows] = await db.query(query);
   return rows;
 };

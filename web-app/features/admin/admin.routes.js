@@ -1,10 +1,21 @@
 const { Router }                        = require('express');
 const controller                        = require('./admin.controller');
 const { authMiddleware, adminMiddleware } = require('../../middleware/auth.middleware');
+const { isSecureMode }                  = require('../../config/secureMode');
 
 const router = Router();
 
-router.use(authMiddleware, adminMiddleware); 
+router.use(authMiddleware, adminMiddleware);
+
+router.use(async (_req, res, next) => {
+  try {
+    if (await isSecureMode()) {
+      res.set('X-Secure-Mode', 'true');
+      res.set('Cache-Control', 'no-store');
+    }
+  } catch {}
+  next();
+});
 
 router.get('/dashboard',                   controller.getDashboardStats);
 

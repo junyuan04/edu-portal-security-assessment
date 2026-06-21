@@ -1,0 +1,88 @@
+%YAML 1.1
+---
+# MyEduConnect - Suricata 7 minimal IDS config
+#
+# Runs as a sidecar inside nginx's network namespace.
+# Suricata sees every HTTP/HTTPS request that lands on the edge, but decrypted only at the nginx upstream hop. .
+
+vars:
+  address-groups:
+    HOME_NET: "[10.0.0.0/8,172.16.0.0/12,192.168.0.0/16]"
+    EXTERNAL_NET: "!$HOME_NET"
+    HTTP_SERVERS: "$HOME_NET"
+  port-groups:
+    HTTP_PORTS: "[80,3000,4000]"
+
+default-log-dir: /var/log/suricata/
+
+stats:
+  enabled: yes
+  interval: 30
+
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types:
+        - alert:
+            payload: yes
+            payload-printable: yes
+            packet: yes
+            metadata: yes
+            http-body: yes
+            http-body-printable: yes
+        - http:
+            extended: yes
+        - dns
+        - tls
+        - flow
+        - stats:
+            totals: yes
+            threads: no
+            deltas: no
+  - fast:
+      enabled: yes
+      filename: fast.log
+      append: yes
+
+logging:
+  default-log-level: info
+  outputs:
+    - console:
+        enabled: yes
+    - file:
+        enabled: yes
+        level: info
+        filename: /var/log/suricata/suricata.log
+
+af-packet:
+  - interface: eth0
+    cluster-id: 99
+    cluster-type: cluster_flow
+    defrag: yes
+    use-mmap: yes
+    tpacket-v3: yes
+
+app-layer:
+  protocols:
+    http:
+      enabled: yes
+      libhtp:
+        default-config:
+          personality: IDS
+          request-body-limit: 100kb
+          response-body-limit: 100kb
+    tls:
+      enabled: yes
+    ssh:
+      enabled: yes
+
+default-rule-path: /etc/suricata/rules
+rule-files:
+  - myeduconnect.rules
+
+classification-file: /etc/suricata/classification.config
+reference-config-file: /etc/suricata/reference.config
+
+

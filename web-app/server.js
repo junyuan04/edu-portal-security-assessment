@@ -13,6 +13,7 @@ const courseRoutes     = require('./features/course/course.routes');
 const enrolmentRoutes  = require('./features/enrolment/enrolment.routes');
 const paymentRoutes    = require('./features/payment/payment.routes');
 const adminRoutes      = require('./features/admin/admin.routes');
+const systemRoutes     = require('./features/system/system.routes');
 
 const app  = express();
 const PORT = process.env.WEB_APP_PORT || 3000;
@@ -30,6 +31,7 @@ app.use('/api/courses',    courseRoutes);
 app.use('/api/enrolments', enrolmentRoutes);
 app.use('/api/payments',   paymentRoutes);
 app.use('/api/admin',      adminRoutes);
+app.use('/api/system',     systemRoutes);
 
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok', service: 'web-app' }));
