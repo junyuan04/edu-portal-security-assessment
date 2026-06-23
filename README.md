@@ -82,7 +82,7 @@ This will:
 | API client | http://localhost:8080/api-client |
 | Admin panel | http://localhost:8080/admin |
 | MySQL (intentionally exposed) | `localhost:3306` |
-| SSH into web-app container (V5) | `ssh root@localhost -p 2222` — password `admin123` |
+| SSH into web-app container (V5) | `ssh root@localhost -p 12222` — password `admin123` |
 
 ### Step 5 — Stop / reset
 
@@ -150,7 +150,7 @@ docker compose -f docker-compose.secure.yml down        # add -v to wipe its DB 
 | **V2 — Stored XSS** | A03 | `ProfilePage.jsx` renders `bio` via `dangerouslySetInnerHTML`; backend stores raw HTML. | Frontend renders bio as plain text; backend strips HTML tags on write. | Runtime |
 | **V3 — IDOR** | A01 | Enrolments controller returns any record by id. | Returns 404 unless caller is the owner or an admin. | Runtime |
 | **V4 — Weak JWT** | A02 | Secret `secret123`, no `exp`; jwt.io forgery succeeds. | Random `JWT_SECRET_SECURE` (≥32 chars) + `expiresIn: 1h` + `HS256` pinned. No fallback — forged `secret123` tokens rejected. | Runtime |
-| **V5 — Weak SSH / root in container** | — | `Dockerfile` installs `sshd`, sets `root:admin123`, exposes port 2222. | `Dockerfile.secure`: no `sshd`, runs as non-root `node`. | **Build-time** |
+| **V5 — Weak SSH / root in container** | — | `Dockerfile` installs `sshd`, sets `root:admin123`, publishes SSH on host port 12222. | `Dockerfile.secure`: no `sshd`, runs as non-root `node`. | **Build-time** |
 | **V6 — Exposed admin panel** | A01 | Only `authMiddleware + adminMiddleware`. | Adds `X-Secure-Mode` + `Cache-Control: no-store` headers; WAF blocks unauthenticated `/api/admin/*` probes at the edge. | Runtime |
 | **V7 — MD5 password hashes** | A02 | `crypto.createHash('md5')`; seeds crack instantly on crackstation. | New passwords stored with `bcrypt` (cost 12); login auto-detects scheme; reset tokens use `randomBytes(32)`. | Runtime |
 | **V8 — Cleartext HTTP** | A02 | `nginx.conf` serves everything over HTTP. | `nginx.secure.conf`: TLS 1.2/1.3 (Mozilla Intermediate), HSTS, 80→443 redirect. | **Build-time** |
@@ -185,7 +185,7 @@ Runs as a sidecar in nginx's network namespace. Rules in `suricata/rules/myeduco
 ### Firewall / network segmentation
 Docker bridge networks enforce zone isolation: `app-net` and `data-net` are `internal: true`
 (no internet route), and **MySQL sits only on `data-net`** — unreachable from the edge. The
-vulnerable stack, by contrast, is a single flat `internal` bridge with MySQL (3306) and SSH (2222)
+vulnerable stack, by contrast, is a single flat `internal` bridge with MySQL (3306) and SSH (12222)
 published to the host.
 
 ---
@@ -196,7 +196,7 @@ The two stacks use different host ports and project names, so they coexist for a
 comparison. Each gets its own containers, network, and `mysql_data` volume (independent state).
 
 ```bash
-# Vulnerable stack — http://localhost:8080, SSH on 2222
+# Vulnerable stack — http://localhost:8080, SSH on 12222
 docker compose -f docker-compose.yml        up -d --build
 
 # Secure stack — https://localhost:8081
@@ -227,7 +227,7 @@ docker compose -f docker-compose.secure.yml down
 | Account | Email | Password | Role |
 |---|---|---|---|
 | Admin | `admin@myeduconnect.my` | `admin123` | admin |
-| SSH (vulnerable build, V5) | `root` @ `localhost:2222` | `admin123` | container root |
+| SSH (vulnerable build, V5) | `root` @ `localhost:12222` | `admin123` | container root |
 
 Seeded instructor and student accounts also exist (`*.@myeduconnect.my`, `*.@student.my`) with
 crackable MD5 hashes — see `web-app/database/seed.sql`.
