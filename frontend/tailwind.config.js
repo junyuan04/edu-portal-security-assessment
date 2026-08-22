@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // MyEduConnect brand palette
+        // EduPortal brand palette
         primary: {
           50:  '#eef2ff',
           100: '#e0e7ff',

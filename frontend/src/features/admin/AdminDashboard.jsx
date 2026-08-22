@@ -667,7 +667,7 @@ const AdminDashboard = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-sm text-gray-400 mt-1">MyEduConnect platform management</p>
+        <p className="text-sm text-gray-400 mt-1">EduPortal platform management</p>
       </div>
       <div className="flex gap-1 border-b border-gray-200 mb-8 overflow-x-auto">
         {TABS.map((tab) => (

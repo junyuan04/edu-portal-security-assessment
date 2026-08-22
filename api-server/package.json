@@ -1,7 +1,7 @@
 {
-  "name": "myeduconnect-api-server",
+  "name": "eduportal-api-server",
   "version": "1.0.0",
-  "description": "MyEduConnect REST API — additional component",
+  "description": "EduPortal REST API — additional component",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

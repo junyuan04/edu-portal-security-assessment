@@ -21,7 +21,6 @@ const verifyPassword = async (password, storedHash) => {
 };
 
 const generateToken = (user, secure) =>
-  // web-app/features/auth/auth.service.js
   secure
     ? jwt.sign(
         { id: user.id, email: user.email, role: user.role },

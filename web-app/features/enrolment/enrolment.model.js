@@ -16,7 +16,7 @@ const findByUserId = async (userId) => {
   return rows;
 };
 
-// Single enrolment （ownership enforced by including user_id in WHERE）
+// Single enrolment (ownership enforced by including user_id in WHERE)
 const findById = async (id, userId) => {
   const [rows] = await db.query(
     `SELECT e.id, e.user_id, e.status, e.progress_pct, e.enrolled_at, e.completed_at,

@@ -1,8 +1,8 @@
-# MyEduConnect — Docker Compose (VULNERABLE)
+# EduPortal Docker Compose (VULNERABLE)
 #
 # Usage:
 #   cp .env.example .env   # fill in values
-#   docker compose up --build or docker compose -p myeduconnect-vuln up --build
+#   docker compose up --build or docker compose -p eduportal-vuln up --build
 # Access:
 #   Main portal  → http://localhost:8080
 #   REST API     → http://localhost:8080/rest
@@ -11,7 +11,7 @@
 #   MySQL        → localhost:3306  (intentionally exposed to the host)
 #   SSH (V5)     → ssh root@localhost -p 12222  /  password: admin123
 
-name: myeduconnect-vuln
+name: eduportal-vuln
 
 services:
 
@@ -50,7 +50,6 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    # docker-compose.yml
     ports:
       - "${SSH_PORT:-12222}:22"
     networks:

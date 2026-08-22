@@ -48,7 +48,7 @@ const findById = async (id) => {
   return rows[0] || null;
 };
 
-// Course materials — returns all for enrolled users
+// Course materials: returns all for enrolled users
 const findMaterials = async (courseId) => {
   const [rows] = await db.query(
     `SELECT id, title, material_type, order_index, is_free

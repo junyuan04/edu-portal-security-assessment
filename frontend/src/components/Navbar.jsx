@@ -33,7 +33,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
 
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-primary-600 font-bold text-xl">MyEduConnect</span>
+            <span className="text-primary-600 font-bold text-xl">EduPortal</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">

@@ -1,4 +1,4 @@
-# MyEduConnect -- Hardened Compose Profile
+# EduPortal -- Hardened Compose Profile
 #
 # Usage:
 #   docker compose -f docker-compose.secure.yml up --build
@@ -7,10 +7,10 @@
 #   Main portal - https://localhost:8081   (self-signed cert: browser warning is expected)
 #   HTTP        - not published (the :80 block only 301s to https)
 #   SSH (V5)    - no longer exposed
-#   WAF audit   - docker exec myeduconnect-secure-nginx-1 tail -f /var/log/modsec_audit.log
-#   IDS alerts  - docker exec myeduconnect-secure-suricata-1 tail -f /var/log/suricata/fast.log
+#   WAF audit   - docker exec eduportal-secure-nginx-1 tail -f /var/log/modsec_audit.log
+#   IDS alerts  - docker exec eduportal-secure-suricata-1 tail -f /var/log/suricata/fast.log
 
-name: myeduconnect-secure
+name: eduportal-secure
 
 services:
 

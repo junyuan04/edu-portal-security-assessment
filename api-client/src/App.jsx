@@ -20,7 +20,7 @@ const App = () => {
       <header className="border-b border-gray-800 bg-gray-900 px-6 py-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-lg font-bold text-white">MyEduConnect REST API Client</h1>
+            <h1 className="text-lg font-bold text-white">EduPortal REST API Client</h1>
             <p className="text-xs text-gray-400 mt-0.5">Vulnerable-baseline build</p>
           </div>
 
@@ -68,7 +68,7 @@ const App = () => {
       </main>
 
       <footer className="border-t border-gray-800 px-6 py-3 text-center text-xs text-gray-600">
-        MyEduConnect Sdn Bhd — security research target · local use only
+        EduPortal Sdn Bhd — security research target · local use only
       </footer>
     </div>
   );

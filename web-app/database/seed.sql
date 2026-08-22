@@ -1,7 +1,7 @@
-USE myeduconnect;
+USE eduportal;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- SYSTEM CONFIG — default to vulnerable mode.
+-- SYSTEM CONFIG: default to vulnerable mode.
 INSERT INTO system_config (config_key, config_value) VALUES
     ('secure_mode', 'false')
 ON DUPLICATE KEY UPDATE config_value = config_value;
@@ -15,11 +15,11 @@ INSERT INTO roles (id, name, description) VALUES
 -- All password_hash values are unsalted MD5 hex strings
 INSERT INTO users (id, role_id, email, username, password_hash, is_active) VALUES
     -- Admin
-    (1, 1, 'admin@myeduconnect.my',       'admin',        '0192023a7bbd73250516f069df18b500', 1),
+    (1, 1, 'admin@eduportal.my',       'admin',        '0192023a7bbd73250516f069df18b500', 1),
 
     -- Instructors
-    (2, 2, 'ahmad.razif@myeduconnect.my', 'ahmad.razif',  'a426dcf72ba25d046591f81a5495eab7', 1),
-    (3, 2, 'nurul.aina@myeduconnect.my',  'nurul.aina',   'b4cd29f38b87efce1490b0755785e237', 1),
+    (2, 2, 'ahmad.razif@eduportal.my', 'ahmad.razif',  'a426dcf72ba25d046591f81a5495eab7', 1),
+    (3, 2, 'nurul.aina@eduportal.my',  'nurul.aina',   'b4cd29f38b87efce1490b0755785e237', 1),
 
     -- Students
     (4, 3, 'ali.hassan@student.my',       'ali.hassan',   'ad6a280417a0f533d8b670c61667e1a0', 1),
@@ -32,8 +32,8 @@ INSERT INTO users (id, role_id, email, username, password_hash, is_active) VALUE
 
 INSERT INTO user_profiles (user_id, full_name, bio, phone, institution) VALUES
     (1, 'Platform Admin',
-        'System administrator for MyEduConnect.',
-        '+603-8888-0001', 'MyEduConnect Sdn Bhd'),
+        'System administrator for EduPortal.',
+        '+603-8888-0001', 'EduPortal Sdn Bhd'),
 
     (2, 'Ahmad Razif bin Zulkifli',
         'Senior lecturer in Computer Science with 10 years of industry experience in Malaysia.',
@@ -187,8 +187,8 @@ INSERT INTO course_reviews (course_id, user_id, rating, comment) VALUES
 
 -- ANNOUNCEMENTS
 INSERT INTO announcements (admin_id, title, body, is_active) VALUES
-    (1, 'Welcome to MyEduConnect!',
-        'We are excited to launch the new MyEduConnect platform. Explore our growing catalogue of courses designed for Malaysian learners.',
+    (1, 'Welcome to EduPortal!',
+        'We are excited to launch the new EduPortal platform. Explore our growing catalogue of courses designed for Malaysian learners.',
         1),
     (1, 'Hari Raya Promotion — 30% Off All Courses',
         'Celebrate Hari Raya with learning! Use code RAYA2026 at checkout for 30% off any course until 15 June 2026.',

@@ -1,9 +1,9 @@
-# MyEduConnect — Web Application Security Assessment
+# EduPortal — Web Application Security Assessment
 
 > **Security Notice:** This platform contains **intentional vulnerabilities**. Run it on
 > localhost only. Never deploy it to a public host.
 
-MyEduConnect is a mock Malaysian edtech platform used as the target environment for a full
+EduPortal is a mock Malaysian edtech platform used as the target environment for a full
 penetration-testing lifecycle: **build → attack → harden → re-test**. The codebase ships with
 **both** a deliberately vulnerable build and a hardened ("secure") build of every finding, so the
 same attacks can be demonstrated succeeding and then failing.
@@ -49,8 +49,8 @@ Install before running:
 ### Step 1 — Clone the repository
 
 ```bash
-git clone <YOUR_PRIVATE_REPO_URL> myeduconnect
-cd myeduconnect
+git clone <YOUR_PRIVATE_REPO_URL> eduportal
+cd eduportal
 ```
 
 ### Step 2 — Create the environment file
@@ -131,8 +131,8 @@ docker compose -f docker-compose.secure.yml up --build
 | Main portal | **https://localhost:8081** (self-signed cert — accept the browser warning) |
 | HTTP | not published (the in-container `:80` block only 301-redirects to HTTPS) |
 | SSH (V5) | no longer exposed |
-| WAF audit log | `docker exec myeduconnect-secure-nginx-1 tail -f /var/log/modsec_audit.log` |
-| IDS alerts | `docker exec myeduconnect-secure-suricata-1 tail -f /var/log/suricata/fast.log` |
+| WAF audit log | `docker exec eduportal-secure-nginx-1 tail -f /var/log/modsec_audit.log` |
+| IDS alerts | `docker exec eduportal-secure-suricata-1 tail -f /var/log/suricata/fast.log` |
 
 ### Step 4 — Stop the secure stack
 
@@ -172,7 +172,7 @@ Engaged at the nginx edge via the `owasp/modsecurity-crs:nginx-alpine` base imag
 | `10003` | 32-char MD5 hash leaked in a JSON response (V7) | log-only (audit) |
 
 ### Intrusion Detection System — Suricata 7 (alert-only)
-Runs as a sidecar in nginx's network namespace. Rules in `suricata/rules/myeduconnect.rules`:
+Runs as a sidecar in nginx's network namespace. Rules in `suricata/rules/eduportal.rules`:
 
 | SID | Detects | Maps to |
 |---|---|---|
@@ -205,8 +205,8 @@ docker compose -f docker-compose.secure.yml up -d --build
 
 | Stack | URL | Project name |
 |---|---|---|
-| Vulnerable | http://localhost:8080 | `myeduconnect-vuln` |
-| Secure | https://localhost:8081 | `myeduconnect-secure` |
+| Vulnerable | http://localhost:8080 | `eduportal-vuln` |
+| Secure | https://localhost:8081 | `eduportal-secure` |
 
 Tear down individually (add `-v` to wipe that stack's DB):
 
@@ -226,10 +226,10 @@ docker compose -f docker-compose.secure.yml down
 
 | Account | Email | Password | Role |
 |---|---|---|---|
-| Admin | `admin@myeduconnect.my` | `admin123` | admin |
+| Admin | `admin@eduportal.my` | `admin123` | admin |
 | SSH (vulnerable build, V5) | `root` @ `localhost:12222` | `admin123` | container root |
 
-Seeded instructor and student accounts also exist (`*.@myeduconnect.my`, `*.@student.my`) with
+Seeded instructor and student accounts also exist (`*.@eduportal.my`, `*.@student.my`) with
 crackable MD5 hashes — see `web-app/database/seed.sql`.
 
 ---

@@ -16,10 +16,10 @@ RUN apk add --no-cache openssl \
     && mkdir -p /etc/nginx/ssl \
     && openssl req -x509 -nodes -days 365 \
         -newkey rsa:2048 \
-        -keyout /etc/nginx/ssl/myeduconnect.key \
-        -out    /etc/nginx/ssl/myeduconnect.crt \
-        -subj   "/C=MY/ST=KL/L=KL/O=MyEduConnect/CN=localhost" \
-    && chmod 600 /etc/nginx/ssl/myeduconnect.key
+        -keyout /etc/nginx/ssl/eduportal.key \
+        -out    /etc/nginx/ssl/eduportal.crt \
+        -subj   "/C=MY/ST=KL/L=KL/O=EduPortal/CN=localhost" \
+    && chmod 600 /etc/nginx/ssl/eduportal.key
 
 # Custom WAF rules layered on top of CRS.
 COPY modsec/custom-rules.conf /etc/modsecurity.d/include_custom.conf

@@ -1,6 +1,6 @@
 %YAML 1.1
 ---
-# MyEduConnect - Suricata 7 minimal IDS config
+# EduPortal - Suricata 7 minimal IDS config
 #
 # Runs as a sidecar inside nginx's network namespace.
 # Suricata sees every HTTP/HTTPS request that lands on the edge, but decrypted only at the nginx upstream hop. .
@@ -80,7 +80,7 @@ app-layer:
 
 default-rule-path: /etc/suricata/rules
 rule-files:
-  - myeduconnect.rules
+  - eduportal.rules
 
 classification-file: /etc/suricata/classification.config
 reference-config-file: /etc/suricata/reference.config

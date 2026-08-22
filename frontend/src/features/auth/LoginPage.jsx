@@ -24,7 +24,7 @@ const LoginPage = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-          <p className="text-sm text-gray-500 mt-1">Sign in to your MyEduConnect account</p>
+          <p className="text-sm text-gray-500 mt-1">Sign in to your EduPortal account</p>
         </div>
 
         {/* Error banner */}
@@ -76,7 +76,7 @@ const LoginPage = () => {
 
         {/* Demo credentials hint */}
         <div className="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-400 text-center">
-          Demo: admin@myeduconnect.my / admin123
+          Demo: admin@eduportal.my / admin123
         </div>
       </div>
     </div>
