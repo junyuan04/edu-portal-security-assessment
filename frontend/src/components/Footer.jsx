@@ -5,7 +5,7 @@ const Footer = () => (
         &copy; {new Date().getFullYear()} MyEduConnect Sdn Bhd. All rights reserved.
       </p>
       <p className="text-xs text-gray-400">
-        CCS6324 — Ethical Hacking &amp; Penetration Testing | Academic use only
+        Security research target — intentionally vulnerable | Local use only
       </p>
     </div>
   </footer>

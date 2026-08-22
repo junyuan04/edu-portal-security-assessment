@@ -22,8 +22,8 @@ module.exports = {
   DB_PASSWORD:    process.env.DB_PASSWORD   || '',
 
   // Intentionally weak JWT secret used by the vulnerable code path. Kept as a
-  // hard-coded default so the Phase 4 handbook walkthrough still demonstrates
-  // the V4 attack against the deliberately vulnerable build.
+  // hard-coded default so the V4 token-forgery attack stays reproducible
+  // against the deliberately vulnerable build.
   JWT_SECRET:        process.env.JWT_SECRET     || 'secret123',
   JWT_EXPIRES_IN:    process.env.JWT_EXPIRES_IN || '0',
 

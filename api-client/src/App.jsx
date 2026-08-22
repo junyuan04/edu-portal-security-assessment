@@ -21,7 +21,7 @@ const App = () => {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-lg font-bold text-white">MyEduConnect REST API Client</h1>
-            <p className="text-xs text-gray-400 mt-0.5">Additional component — CCS6324 Phase 1</p>
+            <p className="text-xs text-gray-400 mt-0.5">Vulnerable-baseline build</p>
           </div>
 
           {/* JWT token input */}
@@ -68,7 +68,7 @@ const App = () => {
       </main>
 
       <footer className="border-t border-gray-800 px-6 py-3 text-center text-xs text-gray-600">
-        MyEduConnect Sdn Bhd — Academic use only · CCS6324 Trimester 2610
+        MyEduConnect Sdn Bhd — security research target · local use only
       </footer>
     </div>
   );

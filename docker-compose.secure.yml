@@ -1,4 +1,4 @@
-# MyEduConnect -- Secure Compose Profile (Phase 5)
+# MyEduConnect -- Hardened Compose Profile
 #
 # Usage:
 #   docker compose -f docker-compose.secure.yml up --build

@@ -1,7 +1,7 @@
-#  CCS6324 — Ethical Hacking & Penetration Testing - MyEduConnect
+# MyEduConnect — Web Application Security Assessment
 
-> **Security Notice:** This platform contains **intentional vulnerabilities** for academic
-> research and penetration-testing practice.
+> **Security Notice:** This platform contains **intentional vulnerabilities**. Run it on
+> localhost only. Never deploy it to a public host.
 
 MyEduConnect is a mock Malaysian edtech platform used as the target environment for a full
 penetration-testing lifecycle: **build → attack → harden → re-test**. The codebase ships with
@@ -26,8 +26,8 @@ same attacks can be demonstrated succeeding and then failing.
 
 | Build | Compose file | Entry point | Purpose |
 |---|---|---|---|
-| **Vulnerable** (default) | `docker-compose.yml` | `http://localhost:8080` | Phase 1 target — all vulnerabilities live |
-| **Secure** (hardened) | `docker-compose.secure.yml` | `https://localhost:8081` | Phase 5 — TLS + WAF + IDS + network segmentation |
+| **Vulnerable** (default) | `docker-compose.yml` | `http://localhost:8080` | Assessment target — all findings live |
+| **Secure** (hardened) | `docker-compose.secure.yml` | `https://localhost:8081` | Remediated — TLS + WAF + IDS + network segmentation |
 
 ---
 
@@ -44,7 +44,7 @@ Install before running:
 
 ---
 
-## 3. Part A — Deploy the Vulnerable Stack (Phase 1)
+## 3. Part A — Deploy the Vulnerable Stack
 
 ### Step 1 — Clone the repository
 
@@ -97,16 +97,16 @@ docker compose down -v         # stop AND wipe the mysql volume (full reset + re
 
 ---
 
-## 4. Part B — Deploy the Secure Stack (Phase 5)
+## 4. Part B — Deploy the Secure Stack
 
-The secure stack proves the Phase 4 attacks fail after hardening. It builds different Docker images
+The secure stack proves the documented attacks fail after hardening. It builds different Docker images
 and adds network defence controls on top of the runtime fixes.
 
 What it adds over the vulnerable stack:
 - **V5 fix** — `web-app/Dockerfile.secure`: no `sshd`, runs as non-root `node` user.
 - **V8 fix** — `nginx/Dockerfile.secure` + `nginx.secure.conf`: self-signed TLS on 443, HSTS, 80→443 redirect.
 - **WAF** — ModSecurity 3 + OWASP CRS v4 (blocking mode) with 3 custom rules.
-- **IDS** — Suricata 7 sidecar with 3 custom rules covering the Phase 4 attacks.
+- **IDS** — Suricata 7 sidecar with 3 custom rules covering the documented attacks.
 - **Network segmentation** — `edge-net` / `app-net` / `data-net` (MySQL isolated, no SSH/DB exposed to host).
 
 ### Step 1 — Ensure `.env` exists with `JWT_SECRET_SECURE`
@@ -159,7 +159,7 @@ docker compose -f docker-compose.secure.yml down        # add -v to wipe its DB 
 
 ## 8. Network Defence Controls (WAF / IDS / Firewall)
 
-These ship **only in the secure stack** (`docker-compose.secure.yml`) and satisfy Phase 5.2.
+These ship **only in the secure stack** (`docker-compose.secure.yml`).
 
 ### Web Application Firewall — ModSecurity 3 + OWASP CRS v4 (blocking)
 Engaged at the nginx edge via the `owasp/modsecurity-crs:nginx-alpine` base image. Custom rules in
