@@ -17,7 +17,6 @@ const RequestBlock = ({ method, endpoint, children, onSubmit, state }) => (
   </div>
 );
 
-// Initial state for API requests
 const initState = () => ({ response: null, loading: false, error: null, timing: null });
 
 const withTiming = async (setState, fn) => {

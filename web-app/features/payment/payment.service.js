@@ -21,14 +21,12 @@ const getPaymentById = async (id, userId) => {
 };
 
 const createPayment = async (userId, { courseId, paymentMethod, cardLastFour }) => {
-  // Validate payment method
   if (!VALID_PAYMENT_METHODS.includes(paymentMethod)) {
     const err = new Error(`paymentMethod must be one of: ${VALID_PAYMENT_METHODS.join(', ')}`);
     err.status = 400;
     throw err;
   }
 
-  // Validate card digits only required for credit_card
   if (paymentMethod === 'credit_card' && (!cardLastFour || !/^\d{4}$/.test(cardLastFour))) {
     const err = new Error('cardLastFour must be exactly 4 digits for credit card payments');
     err.status = 400;
@@ -69,14 +67,12 @@ const createPayment = async (userId, { courseId, paymentMethod, cardLastFour }) 
     throw err;
   }
 
-  // Create the payment record
   const paymentId = await model.create(userId, courseId, price, paymentMethod, cardLastFour);
 
   // Mock payment processing (instantly marks as completed)
   const transactionRef = `TXN-${Date.now()}-${uuidv4().slice(0, 6).toUpperCase()}`;
   await model.updateStatus(paymentId, 'completed', transactionRef);
 
-  // Auto-enrol the user after successful payment
   await model.createEnrolment(userId, courseId);
 
   return model.findById(paymentId, userId);

@@ -1,6 +1,5 @@
 const model = require('./admin.model');
 
-// Users
 const getAllUsers = async (query) => {
   const page  = parseInt(query.page)  || 1;
   const limit = parseInt(query.limit) || 20;
@@ -29,7 +28,6 @@ const toggleUserStatus = async (id, isActive, adminId, ip) => {
   return model.getUserById(id);
 };
 
-// Courses
 const getAllCourses = async () => {
   return model.getAllCourses();
 };
@@ -50,17 +48,14 @@ const toggleCoursePublished = async (id, isPublished, adminId, ip) => {
   return { message: `Course ${isPublished ? 'published' : 'unpublished'} successfully` };
 };
 
-// Dashboard
 const getDashboardStats = async () => {
   return model.getDashboardStats();
 };
 
-// Audit logs
 const getAuditLogs = async (limit) => {
   return model.getAuditLogs(limit);
 };
 
-// Announcements
 const getAnnouncements = async () => {
   return model.getAnnouncements();
 };

@@ -1,6 +1,5 @@
 const db = require('../../config/db');
 
-// Full profile
 const findProfileByUserId = async (userId) => {
   const [rows] = await db.query(
     `SELECT
@@ -16,7 +15,6 @@ const findProfileByUserId = async (userId) => {
   return rows[0] || null;
 };
 
-// Public-facing profile
 const findPublicProfileByUserId = async (userId) => {
   const [rows] = await db.query(
     `SELECT
@@ -32,7 +30,6 @@ const findPublicProfileByUserId = async (userId) => {
   return rows[0] || null;
 };
 
-// Update profile fields
 const updateProfile = async (userId, { fullName, bio, phone, institution, avatarUrl }) => {
   await db.query(
     `INSERT INTO user_profiles (user_id, full_name, bio, phone, institution, avatar_url)

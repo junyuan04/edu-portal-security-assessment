@@ -18,13 +18,11 @@ const systemRoutes     = require('./features/system/system.routes');
 const app  = express();
 const PORT = process.env.WEB_APP_PORT || 3000;
 
-// Global middleware
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(loggerMiddleware);
 
-// Routes
 app.use('/api/auth',       authRoutes);
 app.use('/api/users',      userRoutes);
 app.use('/api/courses',    courseRoutes);
@@ -33,10 +31,8 @@ app.use('/api/payments',   paymentRoutes);
 app.use('/api/admin',      adminRoutes);
 app.use('/api/system',     systemRoutes);
 
-// Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok', service: 'web-app' }));
 
-// Global error handler
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {

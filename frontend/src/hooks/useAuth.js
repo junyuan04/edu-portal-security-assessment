@@ -18,7 +18,6 @@ const useAuth = () => {
     try {
       const { token: newToken, user: newUser } = await authService.login(email, password);
       login(newToken, newUser);
-      // Admins go to dashboard; everyone else goes to courses
       navigate(newUser.role === 'admin' ? '/admin' : '/courses');
     } catch (err) {
       setError(err.message);

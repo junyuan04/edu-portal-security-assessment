@@ -37,7 +37,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Convenience hook
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>');

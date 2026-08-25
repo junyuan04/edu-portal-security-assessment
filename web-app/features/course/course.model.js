@@ -5,7 +5,6 @@ const RATING_AGG = `
   (SELECT COALESCE(AVG(rating), 0) FROM course_reviews WHERE course_id = c.id) AS avg_rating,
   (SELECT COUNT(*)                FROM course_reviews WHERE course_id = c.id) AS review_count`;
 
-// List all published courses
 const findAllPublished = async (categoryId) => {
   const base = `
     SELECT c.id, c.title, c.slug, c.description, c.price, c.level,
@@ -44,7 +43,6 @@ const search = async (keyword) => {
   return rows;
 };
 
-// Find a single course by id
 const findById = async (id) => {
   const [rows] = await db.query(
     `SELECT c.*, cat.name AS category, u.username AS instructor,
@@ -58,7 +56,6 @@ const findById = async (id) => {
   return rows[0] || null;
 };
 
-// Find a single course by slug
 const findBySlug = async (slug) => {
   const [rows] = await db.query(
     `SELECT c.*, cat.name AS category, u.username AS instructor
@@ -71,7 +68,6 @@ const findBySlug = async (slug) => {
   return rows[0] || null;
 };
 
-// Get materials
 const getMaterials = async (courseId, isEnrolled) => {
   const condition = isEnrolled ? '' : 'AND m.is_free = 1';
   const [rows] = await db.query(
@@ -84,7 +80,6 @@ const getMaterials = async (courseId, isEnrolled) => {
   return rows;
 };
 
-// Get all reviews for a course
 const getReviews = async (courseId) => {
   const [rows] = await db.query(
     `SELECT cr.id, cr.user_id, cr.rating, cr.comment, cr.created_at,
@@ -99,7 +94,6 @@ const getReviews = async (courseId) => {
   return rows;
 };
 
-// Add or update a review
 const upsertReview = async (courseId, userId, rating, comment) => {
   await db.query(
     `INSERT INTO course_reviews (course_id, user_id, rating, comment)
@@ -109,7 +103,6 @@ const upsertReview = async (courseId, userId, rating, comment) => {
   );
 };
 
-// Find a single review by id
 const findReviewById = async (reviewId) => {
   const [rows] = await db.query(
     `SELECT id, course_id, user_id, rating, comment, created_at
@@ -120,7 +113,6 @@ const findReviewById = async (reviewId) => {
   return rows[0] || null;
 };
 
-// Find the current user's review on a course
 const findMyReviewForCourse = async (userId, courseId) => {
   const [rows] = await db.query(
     `SELECT id, course_id, user_id, rating, comment, created_at

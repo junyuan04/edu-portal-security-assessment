@@ -87,7 +87,6 @@ const EnrolmentPage = () => {
   const [loading,    setLoading]    = useState(true);
   const [error,      setError]      = useState(null);
 
-  // Cancel confirmation modal state
   const [cancelTarget,  setCancelTarget]  = useState(null); // { id, title }
   const [cancelLoading, setCancelLoading] = useState(false);
 
@@ -124,7 +123,6 @@ const EnrolmentPage = () => {
     }
   };
 
-  // Split enrolments into active/completed and cancelled
   const active    = enrolments.filter((e) => e.status !== 'cancelled');
   const cancelled = enrolments.filter((e) => e.status === 'cancelled');
 

@@ -1,7 +1,6 @@
 const mysql = require('mysql2/promise');
 const env   = require('./env');
 
-// Shared connection pool
 const pool = mysql.createPool({
   host:               env.DB_HOST,
   port:               env.DB_PORT,

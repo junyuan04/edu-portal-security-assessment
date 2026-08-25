@@ -1,6 +1,5 @@
 const db = require('../../config/db');
 
-// All enrolments belonging to a user
 const findByUserId = async (userId) => {
   const [rows] = await db.query(
     `SELECT e.id, e.status, e.progress_pct, e.enrolled_at, e.completed_at,
@@ -29,7 +28,6 @@ const findById = async (id, userId) => {
   return rows[0] || null;
 };
 
-// Check if a user is already enrolled in a course
 const findByUserAndCourse = async (userId, courseId) => {
   const [rows] = await db.query(
     'SELECT id, status FROM enrolments WHERE user_id = ? AND course_id = ?',
@@ -38,7 +36,6 @@ const findByUserAndCourse = async (userId, courseId) => {
   return rows[0] || null;
 };
 
-// Create a new enrolment
 const create = async (userId, courseId) => {
   const [result] = await db.query(
     'INSERT INTO enrolments (user_id, course_id) VALUES (?, ?)',
@@ -47,7 +44,6 @@ const create = async (userId, courseId) => {
   return result.insertId;
 };
 
-// Update progress
 const updateProgress = async (id, userId, progressPct) => {
   const status = progressPct >= 100 ? 'completed' : 'active';
   const completedAt = progressPct >= 100 ? new Date() : null;
@@ -61,7 +57,6 @@ const updateProgress = async (id, userId, progressPct) => {
   return result.affectedRows;
 };
 
-// Cancel enrolment
 const cancel = async (id, userId) => {
   const [result] = await db.query(
     `UPDATE enrolments SET status = 'cancelled' WHERE id = ? AND user_id = ?`,
@@ -70,7 +65,6 @@ const cancel = async (id, userId) => {
   return result.affectedRows;
 };
 
-// Reactivate a previously cancelled enrolment
 const reactivate = async (id) => {
   const [result] = await db.query(
     `UPDATE enrolments

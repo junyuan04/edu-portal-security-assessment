@@ -9,7 +9,6 @@ const TABS = [
   { id: 'users',      label: 'Users'      },
 ];
 
-// Global JWT token state
 const App = () => {
   const [token,     setToken]     = useState('');
   const [activeTab, setActiveTab] = useState('courses');

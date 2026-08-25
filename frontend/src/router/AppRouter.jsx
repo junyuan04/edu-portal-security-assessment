@@ -18,7 +18,6 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
-// Student-only paths
 const StudentRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
   if (!isAuthenticated)       return <Navigate to="/login" replace />;
@@ -42,7 +41,6 @@ const NotFoundPage = () => (
   </div>
 );
 
-// Router
 const AppRouter = () => (
   <Routes>
     <Route path="/" element={<Navigate to="/login" replace />} />

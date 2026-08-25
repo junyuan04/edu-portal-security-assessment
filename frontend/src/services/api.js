@@ -5,7 +5,6 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
 });
 
-// Request interceptor
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('ep_token');
   if (token) {
@@ -14,7 +13,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -181,7 +181,6 @@ const CourseDetailPage = () => {
         setMaterials(materialsData);
         setReviews(reviewsData);
 
-        // Check enrolment + own review only if logged in
         if (isAuthenticated) {
           const [myEnrolments, mine] = await Promise.all([
             enrolmentService.getMyEnrolments(),

@@ -13,20 +13,16 @@ const usersRoutes      = require('./features/users/users.routes');
 const app  = express();
 const PORT = process.env.API_SERVER_PORT || 4000;
 
-// Global middleware 
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-//Routes
 app.use('/courses',    coursesRoutes);
 app.use('/enrolments', enrolmentsRoutes);
 app.use('/users',      usersRoutes);
 
-// Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok', service: 'api-server' }));
 
-// Global error handler
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {

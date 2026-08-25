@@ -21,17 +21,18 @@ default stack and a fix in the hardened stack.
 
 | # | Finding | Severity | OWASP 2021 | Vulnerable code | Remediation |
 |---|---|---|---|---|---|
-| V1 | SQL injection in course search | **Critical** | A03 Injection | `web-app/features/course/course.model.js:30` | Parameterised `LIKE` with `% _ \` escaped, plus a 100-char input cap. UNION payloads return zero rows. |
+| V1 | SQL injection in course search | **Critical** | A03 Injection | `web-app/features/course/course.model.js:29` | Parameterised `LIKE` with `% _ \` escaped, plus a 100-char input cap. UNION payloads return zero rows. |
 | V2 | Stored XSS in profile bio | **High** | A03 Injection | `frontend/src/features/profile/ProfilePage.jsx:59` | Bio renders as plain text; the backend strips HTML tags on write. |
 | V3 | IDOR on enrolment records | Medium | A01 Broken Access Control | `api-server/features/enrolments/enrolments.controller.js:11` | Returns 404 unless the caller owns the record or is an admin. |
 | V4 | Forgeable JWT | **Critical** | A02 Cryptographic Failures | `web-app/config/env.js:27` | Random 32-byte secret, `expiresIn: 1h`, `HS256` pinned, no fallback. Tokens signed with `secret123` are rejected. |
-| V5 | Root SSH inside the container ** | **Critical** | A05 Security Misconfiguration | `web-app/Dockerfile:5` | `Dockerfile.secure` installs no `sshd` and runs as the non-root `node` user. |
+| V5 | Root SSH inside the container | **Critical** | A05 Security Misconfiguration | `web-app/Dockerfile:5` | Build-time fix. `Dockerfile.secure` installs no `sshd` and runs as the non-root `node` user. |
 | V6 | Admin panel reachable at the edge | Medium | A01 Broken Access Control | `web-app/features/admin/admin.routes.js:8` | Adds `X-Secure-Mode` and `Cache-Control: no-store`; the WAF blocks unauthenticated `/api/admin/*` probes before they reach the app. |
 | V7 | Unsalted MD5 password hashes | **High** | A02 Cryptographic Failures | `web-app/features/auth/auth.service.js:11` | `bcrypt` at cost 12; login auto-detects the stored scheme; reset tokens use `randomBytes(32)`. |
-| V8 | Everything served over cleartext HTTP** | **High** | A02 Cryptographic Failures | `nginx/nginx.conf:19` | TLS 1.2/1.3 on the Mozilla Intermediate profile, HSTS, 80 to 443 redirect. |
+| V8 | Everything served over cleartext HTTP | **High** | A02 Cryptographic Failures | `nginx/nginx.conf:19` | Build-time fix. TLS 1.2/1.3 on the Mozilla Intermediate profile, HSTS, 80 to 443 redirect. |
 
-** Fixed at **build time** (a different Docker image). The other six flip at **runtime** through the
-`SECURE_MODE` toggle, so one running stack can demonstrate both behaviours without a rebuild.
+V5 and V8 are fixed at build time, in a different Docker image. The other six flip at runtime
+through the `SECURE_MODE` toggle, so one running stack can demonstrate both behaviours without
+a rebuild.
 
 ---
 

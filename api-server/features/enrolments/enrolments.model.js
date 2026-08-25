@@ -1,6 +1,5 @@
 const db = require('../../config/db');
 
-// All enrolments for a specific user
 const findByUserId = async (userId) => {
   const [rows] = await db.query(
     `SELECT e.id, e.status, e.progress_pct, e.enrolled_at, e.completed_at,
@@ -30,7 +29,6 @@ const findById = async (id) => {
   return rows[0] || null;
 };
 
-// Create a new enrolment
 const create = async (userId, courseId) => {
   const [result] = await db.query(
     'INSERT IGNORE INTO enrolments (user_id, course_id) VALUES (?, ?)',
@@ -39,7 +37,6 @@ const create = async (userId, courseId) => {
   return result.insertId;
 };
 
-// Check existing enrolment
 const findByUserAndCourse = async (userId, courseId) => {
   const [rows] = await db.query(
     'SELECT id FROM enrolments WHERE user_id = ? AND course_id = ?',

@@ -1,4 +1,3 @@
-// Global error handler
 const errorMiddleware = (err, req, res, _next) => {
   console.error(`[error] ${req.method} ${req.path} →`, err.message);
 

@@ -1,6 +1,5 @@
 const db = require('../../config/db');
 
-// Users
 const getAllUsers = async ({ page = 1, limit = 20 } = {}) => {
   const offset = (page - 1) * limit;
   const [rows] = await db.query(
@@ -61,7 +60,6 @@ const updateCoursePublished = async (id, isPublished) => {
   return result.affectedRows;
 };
 
-// Dashboard stats
 const getDashboardStats = async () => {
   const [[users]]      = await db.query('SELECT COUNT(*) AS total FROM users');
   const [[courses]]    = await db.query('SELECT COUNT(*) AS total FROM courses');
@@ -76,7 +74,6 @@ const getDashboardStats = async () => {
   };
 };
 
-// Audit logs
 const getAuditLogs = async (limit = 50) => {
   const [rows] = await db.query(
     `SELECT a.id, a.action, a.target_type, a.target_id,
@@ -98,7 +95,6 @@ const logAction = async (adminId, action, targetType, targetId, detail, ipAddres
   );
 };
 
-// Announcements
 const getAnnouncements = async () => {
   const [rows] = await db.query(
     `SELECT a.id, a.title, a.body, a.is_active, a.created_at, u.username AS admin

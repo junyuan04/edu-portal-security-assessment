@@ -1,6 +1,5 @@
 const db = require('../../config/db');
 
-// Find a user row by email
 const findByEmail = async (email) => {
   const [rows] = await db.query(
     'SELECT u.*, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = ?',
@@ -28,7 +27,6 @@ const createUser = async (email, username, passwordHash) => {
   return result.insertId;
 };
 
-// Insert a matching profile row for the new user
 const createUserProfile = async (userId, fullName) => {
   await db.query(
     'INSERT INTO user_profiles (user_id, full_name) VALUES (?, ?)',

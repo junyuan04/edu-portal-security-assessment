@@ -1,6 +1,5 @@
 const db = require('../../config/db');
 
-// All published courses
 const findAll = async (categoryId) => {
   const base = `
     SELECT c.id, c.title, c.slug, c.description, c.price, c.level,
@@ -35,7 +34,6 @@ const search = async (keyword) => {
   return rows;
 };
 
-// Single course by id
 const findById = async (id) => {
   const [rows] = await db.query(
     `SELECT c.*, cat.name AS category, u.username AS instructor

@@ -130,7 +130,6 @@ const PaymentPage = () => {
         paymentMethod,
         paymentMethod === 'credit_card' ? cardLastFour : null
       );
-      // Redirect to My Learning with success flag
       navigate('/my-enrolments', { state: { paymentSuccess: true } });
     } catch (err) {
       setServerError(err.message);

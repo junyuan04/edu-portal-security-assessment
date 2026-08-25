@@ -1,6 +1,5 @@
 const db = require('../../config/db');
 
-// All payments for a user
 const findByUserId = async (userId) => {
   const [rows] = await db.query(
     `SELECT p.id, p.amount, p.currency, p.status, p.payment_method,
@@ -15,7 +14,6 @@ const findByUserId = async (userId) => {
   return rows;
 };
 
-// Single payment
 const findById = async (id, userId) => {
   const [rows] = await db.query(
     `SELECT p.id, p.amount, p.currency, p.status, p.payment_method,
@@ -39,7 +37,6 @@ const create = async (userId, courseId, amount, paymentMethod, cardLastFour) => 
   return result.insertId;
 };
 
-// Update payment status and attach a transaction reference
 const updateStatus = async (id, status, transactionRef) => {
   await db.query(
     'UPDATE payments SET status = ?, transaction_ref = ? WHERE id = ?',
