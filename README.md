@@ -10,7 +10,7 @@ live; the hardened stack fixes all eight and adds a WAF, an IDS and network segm
 top. The same attack can be demonstrated succeeding against one and failing against the other,
 side by side on one machine.
 
-This started as a team project.
+This started as a team project for a university group assignment.
 
 ---
 
